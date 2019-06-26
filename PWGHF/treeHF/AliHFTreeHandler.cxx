@@ -43,6 +43,14 @@ AliHFTreeHandler::AliHFTreeHandler():
   fY(-9999.),
   fEta(-9999.),
   fPhi(-9999.),
+  fPtJet(-9999.),
+  fEtaJet(-9999.),
+  fPhiJet(-9999.),
+  fDeltaEtaJetHadron(-9999.),
+  fDeltaPhiJetHadron(-9999.),
+  fDeltaRJetHadron(-9999.),
+  fNTracksJet(-9999.),
+  fFastJetWrapper(0x0),
   fDecayLength(-9999.),
   fDecayLengthXY(-9999.),
   fNormDecayLengthXY(-9999.),
@@ -119,6 +127,14 @@ AliHFTreeHandler::AliHFTreeHandler(int PIDopt):
   fY(-9999.),
   fEta(-9999.),
   fPhi(-9999.),
+  fPtJet(-9999.),
+  fEtaJet(-9999.),
+  fPhiJet(-9999.),
+  fDeltaEtaJetHadron(-9999.),
+  fDeltaPhiJetHadron(-9999.),
+  fDeltaRJetHadron(-9999.),
+  fNTracksJet(-9999.),
+  fFastJetWrapper(0x0),
   fDecayLength(-9999.),
   fDecayLengthXY(-9999.),
   fNormDecayLengthXY(-9999.),
@@ -303,6 +319,11 @@ void AliHFTreeHandler::AddJetBranches() {
   fTreeVar->Branch("pt_jet",&fPtJet);
   fTreeVar->Branch(Form("eta_jet",&fEtaJet));
   fTreeVar->Branch(Form("phi",&fPhiJet));
+  fTreeVar->Branch(Form("delta_eta",&fDeltaEtaJetHadron));
+  fTreeVar->Branch(Form("delta_phi",&fDeltaPhiJetHadron));
+  fTreeVar->Branch(Form("delta_r",&fDeltaRJetHadron));
+  fTreeVar->Branch(Form("ntracks",&fNTracksJet));
+  
     
 }
 		   
@@ -410,36 +431,57 @@ bool AliHFTreeHandler::SetJetVars(AliTrackContainer *tracks, AliAODRecoDecayHF* 
   AddJetBranches();
   if (!cand) return false;
   
-  AliFJWrapper fFastJetWrapper(FindJets(tracks, cand, fJetRadius));
-  Int_t Jet_Index=Find_Candidate_Jet(fFastJetWrapper);
+  fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
+  fFastJetWrapper->Clear();
+  FindJets(tracks, cand, fJetRadius);
+  Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return false;
-  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper.GetInclusiveJets(); 
+  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets(); 
   fastjet::PseudoJet Jet = Inclusive_Jets[Jet_Index];
+  std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(Jet_Index));
  
   //if(!Jet) return false;
   
   fPtJet=Jet.perp();
   fEtaJet=Jet.pseudorapidity();
   fPhiJet=Jet.phi();
+  fDeltaEtaJetHadron=fEtaJet-cand->Eta();
+  fDeltaPhiJetHadron=RelativePhi(fPhiJet,cand->Phi());
+  fDeltaRJetHadron=TMath::Sqrt(fDeltaEtaJetHadron*fDeltaEtaJetHadron + fDeltaPhiJetHadron*fDeltaPhiJetHadron);
+  fNTracksJet=Constituents.size();
+  
+  
   
 
     return true;
 }
 
 
+//________________________________________________________________________
+Float_t AliHFTreeHandler::RelativePhi(Float_t Phi1, Float_t Phi2){
+
+  if(Phi1 < -1*TMath::Pi()) Phi1 += (2*TMath::Pi()); // Turns the range of 0to2Pi into -PitoPi ???????????                                                             
+  else if (Phi1 > TMath::Pi()) Phi1 -= (2*TMath::Pi());
+  if(Phi2 < -1*TMath::Pi()) Phi2 += (2*TMath::Pi());
+  else if (Phi2 > TMath::Pi()) Phi2 -= (2*TMath::Pi());
+  Double_t DeltaPhi=Phi2-Phi1;
+  if(DeltaPhi < -1*TMath::Pi()) DeltaPhi += (2*TMath::Pi());
+  else if (DeltaPhi > TMath::Pi()) DeltaPhi -= (2*TMath::Pi());
+  return DeltaPhi;
+}
+
 //________________________________________________________________
-AliFJWrapper AliHFTreeHandler::FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
+void AliHFTreeHandler::FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
 
   //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
   //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
   //be used because of recomputation PV)
 
-  AliFJWrapper fFastJetWrapper("fastjetwrapper","fastjetwrapper");
-  fFastJetWrapper.SetAreaType(fastjet::active_area); 
-  fFastJetWrapper.SetGhostArea(0.005);  
-  fFastJetWrapper.SetR(fJetRadius);
-  fFastJetWrapper.SetAlgorithm(fastjet::antikt_algorithm);
-  fFastJetWrapper.SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0));
+  fFastJetWrapper->SetAreaType(fastjet::active_area); 
+  fFastJetWrapper->SetGhostArea(0.005);  
+  fFastJetWrapper->SetR(fJetRadius);
+  fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
+  fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0));
 
 
 
@@ -461,25 +503,23 @@ AliFJWrapper AliHFTreeHandler::FindJets(AliTrackContainer *tracks, AliAODRecoDec
     for (Int_t j=0; j<daughters.size(); j++){
       if (track==daughters[j]) continue;
     }
-    fFastJetWrapper.AddInputVector(track->Px(), track->Py(), track->Pz(), track->E(),i+100);
+    fFastJetWrapper->AddInputVector(track->Px(), track->Py(), track->Pz(), track->E(),i+100);
   }
-  fFastJetWrapper.AddInputVector(cand->Px(), cand->Py(), cand->Pz(), cand->E(),0);
-  fFastJetWrapper.Run();
-
-  return fFastJetWrapper;
+  fFastJetWrapper->AddInputVector(cand->Px(), cand->Py(), cand->Pz(), cand->E(),0);
+  fFastJetWrapper->Run();
 }
 
 
 //________________________________________________________________
-Int_t AliHFTreeHandler::Find_Candidate_Jet(AliFJWrapper fFastJetWrapper) {
+Int_t AliHFTreeHandler::Find_Candidate_Jet() {
 
   //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
   //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
   //be used because of recomputation PV)
 
-  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper.GetInclusiveJets(); 
+  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets(); 
   for (UInt_t i_Jet=0; i_Jet < Inclusive_Jets.size(); i_Jet++){
-    std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper.GetJetConstituents(i_Jet));
+    std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i_Jet));
     for (UInt_t i_Constituents = 0; i_Constituents < Constituents.size(); i_Constituents++) { 
       if (Constituents[i_Constituents].user_index() == 0) {
 	return i_Jet; 

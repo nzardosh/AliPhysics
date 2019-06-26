@@ -174,8 +174,9 @@ class AliHFTreeHandler : public TObject
     bool SetSingleTrackVars(AliAODTrack* prongtracks[]);
     bool SetPidVars(AliAODTrack* prongtracks[], AliPIDResponse* pidrespo, bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF);
 
-    AliFJWrapper FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius);
-    Int_t Find_Candidate_Jet(AliFJWrapper fFastJetWrapper);
+    Float_t RelativePhi(Float_t Phi1, Float_t Phi2);
+    void FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius);
+    Int_t Find_Candidate_Jet();
   
     //utils methods
     double CombineNsigmaDiffDet(double nsigmaTPC, double nsigmaTOF);
@@ -243,6 +244,11 @@ class AliHFTreeHandler : public TObject
     float fPtJet; ///jet pt
     float fEtaJet; ///jet pseudorapidity
     float fPhiJet; ///jet azimuthal angle
+    float fDeltaEtaJetHadron; ///jet hadron pseudorapidity
+    float fDeltaPhiJetHadron; ///jet hadron azimuthal angle
+    float fDeltaRJetHadron; ///jet hadron distance
+    float fNTracksJet;  //number of tracks in the jet
+    AliFJWrapper *fFastJetWrapper;
 
   /// \cond CLASSIMP
   ClassDef(AliHFTreeHandler,8); ///
