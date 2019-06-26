@@ -27,6 +27,10 @@
 #include "AliAODRecoDecayHF.h"
 #include "AliAODMCParticle.h"
 #include "AliAODPidHF.h"
+#include "AliEmcalJet.h"
+#include "AliTrackContainer.h"
+#include "AliFJWrapper.h"
+#include "FJ_includes.h"
 
 class AliHFTreeHandler : public TObject
 {
@@ -90,7 +94,8 @@ class AliHFTreeHandler : public TObject
         fCandType=0;
         fRunNumberPrevCand = fRunNumber;
       }
-    } 
+    }
+    bool SetJetVars(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius);
     
     //common methods
     void SetOptPID(int PIDopt) {fPidOpt=PIDopt;}
@@ -164,9 +169,13 @@ class AliHFTreeHandler : public TObject
     //helper methods for derived clases (to be used in BuildTree and SetVariables functions)
     void AddCommonDmesonVarBranches();
     void AddSingleTrackBranches();
+    void AddJetBranches();
     void AddPidBranches(bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF);
     bool SetSingleTrackVars(AliAODTrack* prongtracks[]);
     bool SetPidVars(AliAODTrack* prongtracks[], AliPIDResponse* pidrespo, bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF);
+
+    AliFJWrapper FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius);
+    Int_t Find_Candidate_Jet(AliFJWrapper fFastJetWrapper);
   
     //utils methods
     double CombineNsigmaDiffDet(double nsigmaTPC, double nsigmaTOF);
@@ -230,6 +239,10 @@ class AliHFTreeHandler : public TObject
     int fNPbinsNsigmaTPCDataCorr;/// number of p bins for data-driven NsigmaTPC correction
     float fEtalimitsNsigmaTPCDataCorr[AliAODPidHF::kMaxEtaBins+1]; /// vector of eta limits for data-driven NsigmaTPC correction
     int fNEtabinsNsigmaTPCDataCorr; /// number of eta bins for data-driven NsigmaTPC correction
+
+    float fPtJet; ///jet pt
+    float fEtaJet; ///jet pseudorapidity
+    float fPhiJet; ///jet azimuthal angle
 
   /// \cond CLASSIMP
   ClassDef(AliHFTreeHandler,8); ///
