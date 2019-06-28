@@ -1669,7 +1669,7 @@ void AliAnalysisTaskSEHFTreeCreator::Process2Prong(TClonesArray *array2prong, Al
 			  }
 			  if (fWriteVariableTreeD0Jet){
 			    fTreeHandlerD0Jet->SetVariables(fRunNumber,fEventID,ptGenD0,d,bfield,masshypo,fPIDresp);
-			    //fTreeHandlerD0Jet->SetJetVars(cont,d,0.4);
+			    fTreeHandlerD0Jet->SetJetVars(aod,d,0.4);
 			    fTreeHandlerD0Jet->FillTree();
 			  }
                         }

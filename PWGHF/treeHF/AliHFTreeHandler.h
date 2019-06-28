@@ -19,6 +19,7 @@
 // L. van Doremalen, lennart.van.doremalen@cern.ch
 // J. Norman, jaime.norman@cern.ch
 // G. Luparello, grazia.luparello@cern.ch
+// N. Zardoshti, nima.zardoshti@cern.ch
 /////////////////////////////////////////////////////////////
 
 #include <TTree.h>
@@ -31,6 +32,7 @@
 #include "AliTrackContainer.h"
 #include "AliFJWrapper.h"
 #include "FJ_includes.h"
+#include "AliAODEvent.h"
 
 class AliHFTreeHandler : public TObject
 {
@@ -84,6 +86,7 @@ class AliHFTreeHandler : public TObject
     //for MC gen --> common implementation
     TTree* BuildTreeMCGen(TString name, TString title);
     bool SetMCGenVariables(int runnumber, unsigned int eventID, AliAODMCParticle* mcpart);
+    bool SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius);
 
     void FillTree() { //to be called for each candidate!
       if(fFillOnlySignal && !(fCandType&kSignal)) { //if fill only signal and not signal candidate, do not store 
@@ -95,7 +98,6 @@ class AliHFTreeHandler : public TObject
         fRunNumberPrevCand = fRunNumber;
       }
     }
-    bool SetJetVars(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius);
     
     //common methods
     void SetOptPID(int PIDopt) {fPidOpt=PIDopt;}
@@ -175,7 +177,7 @@ class AliHFTreeHandler : public TObject
     bool SetPidVars(AliAODTrack* prongtracks[], AliPIDResponse* pidrespo, bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF);
 
     Float_t RelativePhi(Float_t Phi1, Float_t Phi2);
-    void FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius);
+    void FindJets(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius);
     Int_t Find_Candidate_Jet();
   
     //utils methods

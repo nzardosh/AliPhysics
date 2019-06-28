@@ -423,7 +423,7 @@ bool AliHFTreeHandler::SetSingleTrackVars(AliAODTrack* prongtracks[]) {
 }
 	       
 //________________________________________________________________
-bool AliHFTreeHandler::SetJetVars(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
+bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
 
   //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
   //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
@@ -433,7 +433,7 @@ bool AliHFTreeHandler::SetJetVars(AliTrackContainer *tracks, AliAODRecoDecayHF* 
   
   fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
   fFastJetWrapper->Clear();
-  FindJets(tracks, cand, fJetRadius);
+  FindJets(aod, cand, fJetRadius);
   Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return false;
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets(); 
@@ -471,7 +471,7 @@ Float_t AliHFTreeHandler::RelativePhi(Float_t Phi1, Float_t Phi2){
 }
 
 //________________________________________________________________
-void AliHFTreeHandler::FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
+void AliHFTreeHandler::FindJets(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
 
   //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
   //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
@@ -496,17 +496,19 @@ void AliHFTreeHandler::FindJets(AliTrackContainer *tracks, AliAODRecoDecayHF* ca
     daughters.push_back(daughter);
   }
 
+  
   AliAODTrack *track;
-  for (Int_t i=0; i<tracks->GetNTracks(); i++){
-    track = static_cast<AliAODTrack*>(tracks->GetAcceptParticle(i));
+  for (Int_t i=0; i<aod->GetNumberOfTracks(); i++) {
+    track=dynamic_cast<AliAODTrack *>(aod->GetTrack(i));
     if(!track) continue;
     for (Int_t j=0; j<daughters.size(); j++){
-      if (track==daughters[j]) continue;
+      if (track->GetID()==daughters[j]->GetID()) continue;
     }
     fFastJetWrapper->AddInputVector(track->Px(), track->Py(), track->Pz(), track->E(),i+100);
   }
   fFastJetWrapper->AddInputVector(cand->Px(), cand->Py(), cand->Pz(), cand->E(),0);
   fFastJetWrapper->Run();
+  delete track;
 }
 
 

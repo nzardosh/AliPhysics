@@ -2,6 +2,10 @@
 # * Copyright(c) 1998-2014, ALICE Experiment at CERN, All rights reserved. *
 # *                                                                        *
 # * Author: The ALICE Off-line Project.                                    *
+# **************************************************************************
+# * Copyright(c) 1998-2014, ALICE Experiment at CERN, All rights reserved. *
+# *                                                                        *
+# * Author: The ALICE Off-line Project.                                    *
 # * Contributors are mentioned in the code where appropriate.              *
 # *                                                                        *
 # * Permission to use, copy, modify and distribute this software and its   *
@@ -99,6 +103,19 @@ add_library_tested(${MODULE} SHARED  ${SRCS} G__${MODULE}.cxx)
 set(LIBDEPS ANALYSISalice PWGflowTasks PWGTRD PWGPPevcharQn PWGPPevcharQnInterface PWGHFvertexingHF PWGEMCALbase PWGJETFW ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} PWGTools)
 generate_rootmap("${MODULE}" "${LIBDEPS}" "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE}LinkDef.h")
 
+# set(LIBDEPS ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES})
+if(FASTJET_FOUND)
+  set(LIBDEPS
+    ${LIBDEPS}
+    fastjetcontribfragile
+    fastjetplugins
+    siscone_spherical
+    siscone
+    fastjettools
+    fastjet
+    )
+endif(FASTJET_FOUND)
+
 # Generate a PARfile target for this library
  add_target_parfile(${MODULE} "${SRCS}" "${HDRS}" "${MODULE}LinkDef.h" "${LIBDEPS}")
 
@@ -146,4 +163,5 @@ install(FILES ${HDRS} DESTINATION include)
 install(DIRECTORY
             macros
         DESTINATION PWGHF/treeHF)
+
 
