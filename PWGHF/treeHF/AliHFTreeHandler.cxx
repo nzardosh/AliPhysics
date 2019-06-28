@@ -61,6 +61,7 @@ AliHFTreeHandler::AliHFTreeHandler():
   fPidOpt(kNsigmaPID),
   fSingleTrackOpt(kRedSingleTrackVars),
   fFillOnlySignal(false),
+  fFillJets(false),
   fIsMCGenTree(false),
   fDauInAcceptance(false),
   fEvID(9999),
@@ -145,6 +146,7 @@ AliHFTreeHandler::AliHFTreeHandler(int PIDopt):
   fPidOpt(PIDopt),
   fSingleTrackOpt(kRedSingleTrackVars),
   fFillOnlySignal(false),
+  fFillJets(false),
   fIsMCGenTree(false),
   fDauInAcceptance(false),
   fEvID(9999),
@@ -314,8 +316,6 @@ void AliHFTreeHandler::AddSingleTrackBranches() {
 //________________________________________________________________
 void AliHFTreeHandler::AddJetBranches() {
 
-  if(fSingleTrackOpt==kNoSingleTrackVars) return;
-
   fTreeVar->Branch("pt_jet",&fPtJet);
   fTreeVar->Branch("eta_jet",&fEtaJet);
   fTreeVar->Branch("phi_jet",&fPhiJet);
@@ -428,7 +428,6 @@ bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Dou
   //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
   //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
   //be used because of recomputation PV)
-  AddJetBranches();
   if (!cand) return false;
   
   fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");

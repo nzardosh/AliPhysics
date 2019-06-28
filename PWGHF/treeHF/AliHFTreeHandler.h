@@ -100,6 +100,7 @@ class AliHFTreeHandler : public TObject
     }
     
     //common methods
+    void SetFillJets(bool FillJets) {fFillJets=FillJets;}
     void SetOptPID(int PIDopt) {fPidOpt=PIDopt;}
     void SetOptSingleTrackVars(int opt) {fSingleTrackOpt=opt;}
     void SetFillOnlySignal(bool fillopt=true) {fFillOnlySignal=fillopt;}
@@ -251,6 +252,7 @@ class AliHFTreeHandler : public TObject
     float fDeltaRJetHadron; ///jet hadron distance
     float fNTracksJet;  //number of tracks in the jet
     AliFJWrapper *fFastJetWrapper;
+    bool  fFillJets; //fill jets
 
   /// \cond CLASSIMP
   ClassDef(AliHFTreeHandler,8); ///

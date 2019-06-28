@@ -93,7 +93,6 @@ public:
     void SetFillBplusTree(Int_t opt){fWriteVariableTreeBplus=opt;}
     void SetFillDstarTree(Int_t opt){fWriteVariableTreeDstar=opt;}
     void SetFillLc2V0bachelorTree(Int_t opt){fWriteVariableTreeLc2V0bachelor=opt;}
-    void SetFillD0JetTree(Int_t opt){fWriteVariableTreeD0Jet=opt;}
     void SetPIDoptD0Tree(Int_t opt){fPIDoptD0=opt;}
     void SetPIDoptDsTree(Int_t opt){fPIDoptDs=opt;}
     void SetPIDoptDplusTree(Int_t opt){fPIDoptDplus=opt;}
@@ -101,7 +100,6 @@ public:
     void SetPIDoptBplusTree(Int_t opt){fPIDoptBplus=opt;}
     void SetPIDoptDstarTree(Int_t opt){fPIDoptDstar=opt;}
     void SetPIDoptLc2V0bachelorTree(Int_t opt){fPIDoptLc2V0bachelor=opt;}
-    void SetPIDoptD0JetTree(Int_t opt){fPIDoptD0Jet=opt;}
     void SetFillMCGenTrees(Bool_t fillMCgen) {fFillMCGenTrees=fillMCgen;}
   
     void SetMinJetPtCorr(double pt) { fMinJetPtCorr = pt; }
@@ -115,6 +113,8 @@ public:
     void SetFillpTD(bool b) { fFillpTD = b; }
     void SetFillMass(bool b) { fFillMass = b; }
     void SetFillMatchingJetID(bool b) { fFillMatchingJetID = b; }
+
+    void SetFillJets(bool b) {fFillJets = b; }
   
     void SetDsMassKKOption(AliHFTreeHandlerDstoKKpi::massKKopt opt) {fDsMassKKOpt=opt;}
     void SetLc2V0bachelorCalcSecoVtx(Int_t opt=1) {fLc2V0bachelorCalcSecoVtx=opt;}
@@ -213,12 +213,7 @@ private:
     Int_t                  fWriteVariableTreeLc2V0bachelor;        // flag to decide whether to write the candidate variables on a tree variables
     													                                     // 0 don't fill
     // 1 fill standard tree
-
-    Int_t                   fWriteVariableTreeD0Jet;                  // flag to decide whether to write the candidate variables on a tree variables
-                                                                   // 0 don't fill
-                                                                   // 1 fill standard tree
-
-    Int_t                   fFillD0Tree;
+    Bool_t                   fFillJets;                            //FillJetInfo
 
     TTree                   *fVariablesTreeD0;                     //!<! tree of the candidate variables
     TTree                   *fVariablesTreeDs;                     //!<! tree of the candidate variables
@@ -227,7 +222,6 @@ private:
     TTree                   *fVariablesTreeBplus;                  //!<! tree of the candidate variables
     TTree                   *fVariablesTreeDstar;                  //!<! tree of the candidate variables
     TTree                   *fVariablesTreeLc2V0bachelor;          //!<! tree of the candidate variables
-    TTree                   *fVariablesTreeD0Jet;                     //!<! tree of the candidate variables
     TTree                   *fGenTreeD0;                           //!<! tree of the gen D0 variables
     TTree                   *fGenTreeDs;                           //!<! tree of the gen Ds variables
     TTree                   *fGenTreeDplus;                        //!<! tree of the gen D+ variables
@@ -236,7 +230,6 @@ private:
     TTree                   *fGenTreeDstar;                        //!<! tree of the gen Dstar variables
     TTree                   *fGenTreeLc2V0bachelor;                //!<! tree of the gen Lc2V0bachelor variables
     TTree                   *fTreeEvChar;                          //!<! tree of event variables
-    TTree                   *fGenTreeD0Jet;                           //!<! tree of the gen D0 variables
     bool                    fWriteOnlySignal;
     AliHFTreeHandlerD0toKpi        *fTreeHandlerD0;                //!<! handler object for the tree with topological variables
     AliHFTreeHandlerDstoKKpi       *fTreeHandlerDs;                //!<! handler object for the tree with topological variables
@@ -245,7 +238,6 @@ private:
     AliHFTreeHandlerBplustoD0pi    *fTreeHandlerBplus;             //!<! handler object for the tree with topological variables
     AliHFTreeHandlerDstartoKpipi   *fTreeHandlerDstar;             //!<! handler object for the tree with topological variables
     AliHFTreeHandlerLc2V0bachelor  *fTreeHandlerLc2V0bachelor;     //!<! handler object for the tree with topological variables
-    AliHFTreeHandlerD0toKpi        *fTreeHandlerD0Jet;                //!<! handler object for the tree with topological variables
     AliHFTreeHandlerD0toKpi        *fTreeHandlerGenD0;             //!<! handler object for the tree with topological variables
     AliHFTreeHandlerDstoKKpi       *fTreeHandlerGenDs;             //!<! handler object for the tree with topological variables
     AliHFTreeHandlerDplustoKpipi   *fTreeHandlerGenDplus;          //!<! handler object for the tree with topological variables
@@ -253,7 +245,6 @@ private:
     AliHFTreeHandlerBplustoD0pi    *fTreeHandlerGenBplus;          //!<! handler object for the tree with topological variables
     AliHFTreeHandlerDstartoKpipi   *fTreeHandlerGenDstar;          //!<! handler object for the tree with topological variables
     AliHFTreeHandlerLc2V0bachelor  *fTreeHandlerGenLc2V0bachelor;  //!<! handler object for the tree with topological variables
-    AliHFTreeHandlerD0toKpi        *fTreeHandlerGenD0Jet;             //!<! handler object for the tree with topological variables
     AliPIDResponse          *fPIDresp;                             /// PID response
     int                     fPIDoptD0;                             /// PID option for D0 tree
     int                     fPIDoptDs;                             /// PID option for Ds tree
@@ -262,7 +253,6 @@ private:
     int                     fPIDoptBplus;                          /// PID option for B+ tree
     int                     fPIDoptDstar;                          /// PID option for D* tree
     int                     fPIDoptLc2V0bachelor;                  /// PID option for Lc2V0bachelor tree
-    int                     fPIDoptD0Jet;                             /// PID option for D0 tree
     Float_t                 fCentrality;                           /// event centrality
     Float_t                 fzVtxReco;                             /// reconstructed Zvtx
     Float_t                 fzVtxGen;                              /// generated Zvtx

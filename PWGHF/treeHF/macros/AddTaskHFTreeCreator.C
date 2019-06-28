@@ -5,7 +5,7 @@ AliAnalysisTaskSEHFTreeCreator *AddTaskHFTreeCreator(Bool_t readMC=kTRUE,
                                                      Int_t AODProtection = 1,
                                                      Bool_t writeOnlySignalTree=kFALSE,
                                                      Bool_t fillMGgenTrees=kFALSE,
-                                                     Int_t fillTreeD0=1,
+						     Int_t fillTreeD0=1,
                                                      Int_t fillTreeDs=1,
                                                      Int_t fillTreeDplus=1,
                                                      Int_t fillTreeDstar=1,
@@ -206,7 +206,7 @@ AliAnalysisTaskSEHFTreeCreator *AddTaskHFTreeCreator(Bool_t readMC=kTRUE,
     std::vector<AliAnalysisDataContainer*> coutputTreeJet;
     std::vector<AliAnalysisDataContainer*> coutputTreeJetConstituent;
 
-    if(fillTreeD0) {
+    if(fillTreeD0 ) {
       coutputTreeD0 = mgr->CreateContainer(treeD0name,TTree::Class(),AliAnalysisManager::kOutputContainer,outputfile.Data());
       coutputTreeD0->SetSpecialOutput();
       if(readMC && fillMGgenTrees) {
