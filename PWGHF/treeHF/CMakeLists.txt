@@ -1,3 +1,4 @@
+
 # **************************************************************************
 # * Copyright(c) 1998-2014, ALICE Experiment at CERN, All rights reserved. *
 # *                                                                        *
@@ -39,13 +40,13 @@ include_directories(${ROOT_INCLUDE_DIRS}
                     ${AliPhysics_SOURCE_DIR}/PWG/Tools
                     ${AliPhysics_SOURCE_DIR}/PWG/TRD
                     ${AliPhysics_SOURCE_DIR}/PWGHF/vertexingHF
-                   # ${AliRoot_SOURCE_DIR}/ANALYSIS/ANALYSIS		
-                   # ${AliRoot_SOURCE_DIR}/ANALYSIS/ANALYSISalice	
+                    ${AliRoot_SOURCE_DIR}/ANALYSIS/ANALYSIS		
+                    ${AliRoot_SOURCE_DIR}/ANALYSIS/ANALYSISalice	
                     ${AliRoot_SOURCE_DIR}/EMCAL/EMCALbase
                     ${AliRoot_SOURCE_DIR}/EMCAL/EMCALUtils
 		    ${AliPhysics_SOURCE_DIR}/PWGJE/EMCALJetTasks
 
-  )
+)
 
 # Sources - alphabetical order
 set(SRCS
@@ -61,7 +62,7 @@ set(SRCS
   AliHFTreeHandlerLc2V0bachelor.cxx
   AliJetTreeHandler.cxx
   AliParticleTreeHandler.cxx
-  ${AliPhysics_SOURCE_DIR}/PWGJE/EMCALJetTasks/AliFJWrapper.cxx
+  # ${AliPhysics_SOURCE_DIR}/PWGJE/EMCALJetTasks/AliFJWrapper.cxx
 
   )
 
@@ -101,7 +102,7 @@ add_library_tested(${MODULE} SHARED  ${SRCS} G__${MODULE}.cxx)
 
 # Generate the ROOT map
 # Dependecies
-set(LIBDEPS ANALYSISalice PWGflowTasks PWGTRD PWGPPevcharQn PWGPPevcharQnInterface PWGHFvertexingHF PWGEMCALbase PWGJETFW ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} PWGTools)
+set(LIBDEPS ANALYSISalice PWGflowTasks PWGTRD PWGPPevcharQn PWGPPevcharQnInterface PWGHFvertexingHF PWGJEEMCALJetTasks PWGEMCALbase PWGJETFW ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} PWGTools)
 generate_rootmap("${MODULE}" "${LIBDEPS}" "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE}LinkDef.h")
 
 # set(LIBDEPS ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES})
@@ -164,5 +165,3 @@ install(FILES ${HDRS} DESTINATION include)
 install(DIRECTORY
             macros
         DESTINATION PWGHF/treeHF)
-
-

@@ -424,18 +424,16 @@ bool AliHFTreeHandler::SetSingleTrackVars(AliAODTrack* prongtracks[]) {
 	       
 //________________________________________________________________
 bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
-
   //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
   //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
   //be used because of recomputation PV)
   if (!cand) return false;
-  
   fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
   fFastJetWrapper->Clear();
   FindJets(aod, cand, fJetRadius);
   Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return false;
-  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets(); 
+  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
   fastjet::PseudoJet Jet = Inclusive_Jets[Jet_Index];
   std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(Jet_Index));
  
@@ -448,7 +446,6 @@ bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Dou
   fDeltaPhiJetHadron=RelativePhi(fPhiJet,cand->Phi());
   fDeltaRJetHadron=TMath::Sqrt(fDeltaEtaJetHadron*fDeltaEtaJetHadron + fDeltaPhiJetHadron*fDeltaPhiJetHadron);
   fNTracksJet=Constituents.size();
-  
   
   
 
@@ -496,7 +493,7 @@ void AliHFTreeHandler::FindJets(AliAODEvent *aod, AliAODRecoDecayHF* cand, Doubl
   }
 
   
-  AliAODTrack *track;
+  AliAODTrack *track=NULL;
   for (Int_t i=0; i<aod->GetNumberOfTracks(); i++) {
     track=dynamic_cast<AliAODTrack *>(aod->GetTrack(i));
     if(!track) continue;
@@ -505,9 +502,9 @@ void AliHFTreeHandler::FindJets(AliAODEvent *aod, AliAODRecoDecayHF* cand, Doubl
     }
     fFastJetWrapper->AddInputVector(track->Px(), track->Py(), track->Pz(), track->E(),i+100);
   }
-  fFastJetWrapper->AddInputVector(cand->Px(), cand->Py(), cand->Pz(), cand->E(),0);
+  fFastJetWrapper->AddInputVector(cand->Px(), cand->Py(), cand->Pz(), cand->E(cand->PdgCode()),0);
   fFastJetWrapper->Run();
-  delete track;
+  //delete track;
 }
 
 
