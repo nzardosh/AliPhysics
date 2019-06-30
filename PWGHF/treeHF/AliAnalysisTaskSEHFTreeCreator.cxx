@@ -775,6 +775,7 @@ void AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects()
           OpenFile(7);
           TString nameoutput = "tree_D0_gen";
           fTreeHandlerGenD0 = new AliHFTreeHandlerD0toKpi(0);
+	  fTreeHandlerGenD0->SetFillJets(fFillJets);
           fGenTreeD0 = (TTree*)fTreeHandlerGenD0->BuildTreeMCGen(nameoutput,nameoutput);
           fGenTreeD0->SetMaxVirtualSize(1.e+8/nEnabledTrees);
           fTreeEvChar->AddFriend(fGenTreeD0);
@@ -2603,7 +2604,7 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
 	    fTreeHandlerGenD0->SetDauInAcceptance(isDaugInAcc);
 	    fTreeHandlerGenD0->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
 	    fTreeHandlerGenD0->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-	    //put jet function here
+	    if(fFillJets) fTreeHandlerGenD0->SetGenJetVars(arrayMC,mcPart, 0.4);
 	    fTreeHandlerGenD0->FillTree();
         }
         else if(absPDG == 431 && fWriteVariableTreeDs) {
