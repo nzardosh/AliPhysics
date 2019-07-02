@@ -213,7 +213,6 @@ private:
     Int_t                  fWriteVariableTreeLc2V0bachelor;        // flag to decide whether to write the candidate variables on a tree variables
     													                                     // 0 don't fill
     // 1 fill standard tree
-    Bool_t                   fFillJets;                            //FillJetInfo
 
     TTree                   *fVariablesTreeD0;                     //!<! tree of the candidate variables
     TTree                   *fVariablesTreeDs;                     //!<! tree of the candidate variables
@@ -321,6 +320,7 @@ private:
     bool                    fFillpTD;                              ///< pT,D
     bool                    fFillMass;                             ///< Mass
     bool                    fFillMatchingJetID;                    ///< jet matching
+    bool                    fFillJets;                             //FillJetInfo
   
     bool fEnableNsigmaTPCDataCorr; /// flag to enable data-driven NsigmaTPC correction
     int fSystemForNsigmaTPCDataCorr; /// system for data-driven NsigmaTPC correction

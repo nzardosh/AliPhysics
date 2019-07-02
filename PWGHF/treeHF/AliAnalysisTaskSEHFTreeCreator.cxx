@@ -177,7 +177,6 @@ fDsMassKKOpt(1),
 fLc2V0bachelorCalcSecoVtx(0),
 fTreeSingleTrackVarsOpt(AliHFTreeHandler::kRedSingleTrackVars),
 fFillParticleTree(false),
-fFillJets(false),
 fVariablesTreeParticle(0),
 fVariablesTreeGenParticle(0),
 fTreeHandlerParticle(nullptr),
@@ -204,6 +203,7 @@ fFillRadialMoment(false),
 fFillpTD(false),
 fFillMass(false),
 fFillMatchingJetID(false),
+fFillJets(false),
 fEnableNsigmaTPCDataCorr(false),
 fSystemForNsigmaTPCDataCorr(AliAODPidHF::kNone)
 {
@@ -304,7 +304,6 @@ fDsMassKKOpt(1),
 fLc2V0bachelorCalcSecoVtx(0),
 fTreeSingleTrackVarsOpt(AliHFTreeHandler::kRedSingleTrackVars),
 fFillParticleTree(false),
-fFillJets(false),
 fVariablesTreeParticle(0),
 fVariablesTreeGenParticle(0),
 fTreeHandlerParticle(nullptr),
@@ -331,6 +330,7 @@ fFillRadialMoment(false),
 fFillpTD(false),
 fFillMass(false),
 fFillMatchingJetID(false),
+fFillJets(false),
 fEnableNsigmaTPCDataCorr(false),
 fSystemForNsigmaTPCDataCorr(AliAODPidHF::kNone)
 {
@@ -2582,7 +2582,7 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
           isPrimary = kFALSE;
           isFeeddown = kTRUE;
         }
-
+ 
         Int_t  deca = 0;
         Int_t  labDau[3] = {-1,-1,-1};
         Int_t  labDau2[3] = {-1,-1,-1}; //Needed for 2nd decay same particle
