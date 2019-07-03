@@ -347,13 +347,13 @@ void AliHFTreeHandler::AddJetBranches() {
 //________________________________________________________________
 void AliHFTreeHandler::AddGenJetBranches() {
 
-    fTreeVar->Branch("pt_gen_jet",&fPtGenJet);
-    fTreeVar->Branch("eta_gen_jet",&fEtaGenJet);
-    fTreeVar->Branch("phi_gen_jet",&fPhiGenJet);
-    fTreeVar->Branch("delta_eta_gen_jet",&fDeltaEtaGenJetHadron);
-    fTreeVar->Branch("delta_phi_gen_jet",&fDeltaPhiGenJetHadron);
-    fTreeVar->Branch("delta_r_gen_jet",&fDeltaRGenJetHadron);
-    fTreeVar->Branch("ntracks_gen_jet",&fNTracksGenJet);
+    fTreeVar->Branch("pt_jet",&fPtGenJet);
+    fTreeVar->Branch("eta_jet",&fEtaGenJet);
+    fTreeVar->Branch("phi_jet",&fPhiGenJet);
+    fTreeVar->Branch("delta_eta_jet",&fDeltaEtaGenJetHadron);
+    fTreeVar->Branch("delta_phi_jet",&fDeltaPhiGenJetHadron);
+    fTreeVar->Branch("delta_r_jet",&fDeltaRGenJetHadron);
+    fTreeVar->Branch("ntracks_jet",&fNTracksGenJet);
     
 }
 		   
@@ -454,9 +454,7 @@ bool AliHFTreeHandler::SetSingleTrackVars(AliAODTrack* prongtracks[]) {
 	       
 //________________________________________________________________
 bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
-  //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
-  //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
-  //be used because of recomputation PV)
+
   if (!cand) return false;
   fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
   fFastJetWrapper->Clear();
@@ -485,9 +483,7 @@ bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Dou
 
 //________________________________________________________________
 bool AliHFTreeHandler::SetGenJetVars(TClonesArray *arrayMC, AliAODMCParticle* mcPart, Double_t fJetRadius) {
-  //Impact parameters of the prongs are defined as a species dependent variable because the prongs 
-  //cannot be obtained in similar way for the different AliAODRecoDecay objects (AliAODTrack cannot
-  //be used because of recomputation PV)
+
   if (!mcPart) return false;
   fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
   fFastJetWrapper->Clear();

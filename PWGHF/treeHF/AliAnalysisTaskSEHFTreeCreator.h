@@ -115,6 +115,7 @@ public:
     void SetFillMatchingJetID(bool b) { fFillMatchingJetID = b; }
 
     void SetFillJets(bool b) {fFillJets = b; }
+    void SetJetRadius(Double_t d) {fJetRadius = d; }
   
     void SetDsMassKKOption(AliHFTreeHandlerDstoKKpi::massKKopt opt) {fDsMassKKOpt=opt;}
     void SetLc2V0bachelorCalcSecoVtx(Int_t opt=1) {fLc2V0bachelorCalcSecoVtx=opt;}
@@ -271,6 +272,8 @@ private:
     Int_t                   fLc2V0bachelorCalcSecoVtx;             /// option to calculate the secondary vertex for Lc2V0bachelor. False by default, has to be added to AddTask in case we want to start using it.
   
     Int_t                   fTreeSingleTrackVarsOpt;               /// option for single-track variables to be filled in the trees
+
+    Double_t                fJetRadius;
   
     // Particles (tracks / MC particles)
     // Add a single AliTrackContainer and/or AliMCParticleContainer to select particles
