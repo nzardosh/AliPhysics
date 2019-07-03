@@ -256,6 +256,8 @@ class AliHFTreeHandler : public TObject
     float fDeltaPhiJetHadron; ///jet hadron azimuthal angle
     float fDeltaRJetHadron; ///jet hadron distance
     float fNTracksJet;  //number of tracks in the jet
+    float fZgJet; //zg
+    float fRgJet; //Rg
     float fPtGenJet; ///Gen jet pt
     float fEtaGenJet; ///Gen jet pseudorapidity
     float fPhiGenJet; ///Gen jet azimuthal angle
@@ -263,6 +265,8 @@ class AliHFTreeHandler : public TObject
     float fDeltaPhiGenJetHadron; ///Gen jet hadron azimuthal angle
     float fDeltaRGenJetHadron; ///Gen jet hadron distance
     float fNTracksGenJet;  //number of tracks in the Gen jet
+    float fZgGenJet; //zg
+    float fRgGenJet; //Rg
     AliFJWrapper *fFastJetWrapper;
     bool  fFillJets; //fill jets
 
