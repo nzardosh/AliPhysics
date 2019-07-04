@@ -52,6 +52,8 @@ include_directories(${ROOT_INCLUDE_DIRS}
 set(SRCS
 
   AliAnalysisTaskSEHFTreeCreator.cxx
+  AliHFJet.cxx
+  AliHFJetFinder.cxx
   AliHFTreeHandler.cxx
   AliHFTreeHandlerD0toKpi.cxx
   AliHFTreeHandlerDplustoKpipi.cxx

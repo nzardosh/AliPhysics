@@ -43,6 +43,33 @@ AliHFTreeHandler::AliHFTreeHandler():
   fY(-9999.),
   fEta(-9999.),
   fPhi(-9999.),
+  fDecayLength(-9999.),
+  fDecayLengthXY(-9999.),
+  fNormDecayLengthXY(-9999.),
+  fCosP(-9999.),
+  fCosPXY(-9999.),
+  fImpParXY(-9999.),
+  fDCA(-9999.),
+  fPidOpt(kNsigmaPID),
+  fSingleTrackOpt(kRedSingleTrackVars),
+  fFillOnlySignal(false),
+  fIsMCGenTree(false),
+  fDauInAcceptance(false),
+  fEvID(9999),
+  fRunNumber(9999),
+  fRunNumberPrevCand(9999),
+  fApplyNsigmaTPCDataCorr(false),
+  fSystNsigmaTPCDataCorr(AliAODPidHF::kNone),
+  fMeanNsigmaTPCPionData{},
+  fMeanNsigmaTPCKaonData{},
+  fMeanNsigmaTPCProtonData{},
+  fSigmaNsigmaTPCPionData{},
+  fSigmaNsigmaTPCKaonData{},
+  fSigmaNsigmaTPCProtonData{},
+  fPlimitsNsigmaTPCDataCorr{},
+  fNPbinsNsigmaTPCDataCorr(0),
+  fEtalimitsNsigmaTPCDataCorr{},
+  fNEtabinsNsigmaTPCDataCorr(0),
   fPtJet(-9999.),
   fEtaJet(-9999.),
   fPhiJet(-9999.),
@@ -62,34 +89,7 @@ AliHFTreeHandler::AliHFTreeHandler():
   fZgGenJet(-9999.),
   fRgGenJet(-9999.),
   fFastJetWrapper(0x0),
-  fDecayLength(-9999.),
-  fDecayLengthXY(-9999.),
-  fNormDecayLengthXY(-9999.),
-  fCosP(-9999.),
-  fCosPXY(-9999.),
-  fImpParXY(-9999.),
-  fDCA(-9999.),
-  fPidOpt(kNsigmaPID),
-  fSingleTrackOpt(kRedSingleTrackVars),
-  fFillOnlySignal(false),
-  fFillJets(false),
-  fIsMCGenTree(false),
-  fDauInAcceptance(false),
-  fEvID(9999),
-  fRunNumber(9999),
-  fRunNumberPrevCand(9999),
-  fApplyNsigmaTPCDataCorr(false),
-  fSystNsigmaTPCDataCorr(AliAODPidHF::kNone),
-  fMeanNsigmaTPCPionData{},
-  fMeanNsigmaTPCKaonData{},
-  fMeanNsigmaTPCProtonData{},
-  fSigmaNsigmaTPCPionData{},
-  fSigmaNsigmaTPCKaonData{},
-  fSigmaNsigmaTPCProtonData{},
-  fPlimitsNsigmaTPCDataCorr{},
-  fNPbinsNsigmaTPCDataCorr(0),
-  fEtalimitsNsigmaTPCDataCorr{},
-  fNEtabinsNsigmaTPCDataCorr(0)
+  fFillJets(false)
 {
   //
   // Default constructor
@@ -139,6 +139,33 @@ AliHFTreeHandler::AliHFTreeHandler(int PIDopt):
   fY(-9999.),
   fEta(-9999.),
   fPhi(-9999.),
+  fDecayLength(-9999.),
+  fDecayLengthXY(-9999.),
+  fNormDecayLengthXY(-9999.),
+  fCosP(-9999.),
+  fCosPXY(-9999.),
+  fImpParXY(-9999.),
+  fDCA(-9999.),
+  fPidOpt(PIDopt),
+  fSingleTrackOpt(kRedSingleTrackVars),
+  fFillOnlySignal(false),
+  fIsMCGenTree(false),
+  fDauInAcceptance(false),
+  fEvID(9999),
+  fRunNumber(9999),
+  fRunNumberPrevCand(9999),
+  fApplyNsigmaTPCDataCorr(false),
+  fSystNsigmaTPCDataCorr(AliAODPidHF::kNone),
+  fMeanNsigmaTPCPionData{},
+  fMeanNsigmaTPCKaonData{},
+  fMeanNsigmaTPCProtonData{},
+  fSigmaNsigmaTPCPionData{},
+  fSigmaNsigmaTPCKaonData{},
+  fSigmaNsigmaTPCProtonData{},
+  fPlimitsNsigmaTPCDataCorr{},
+  fNPbinsNsigmaTPCDataCorr(0),
+  fEtalimitsNsigmaTPCDataCorr{},
+  fNEtabinsNsigmaTPCDataCorr(0),
   fPtJet(-9999.),
   fEtaJet(-9999.),
   fPhiJet(-9999.),
@@ -158,34 +185,7 @@ AliHFTreeHandler::AliHFTreeHandler(int PIDopt):
   fZgGenJet(-9999.),
   fRgGenJet(-9999.),
   fFastJetWrapper(0x0),
-  fDecayLength(-9999.),
-  fDecayLengthXY(-9999.),
-  fNormDecayLengthXY(-9999.),
-  fCosP(-9999.),
-  fCosPXY(-9999.),
-  fImpParXY(-9999.),
-  fDCA(-9999.),
-  fPidOpt(PIDopt),
-  fSingleTrackOpt(kRedSingleTrackVars),
-  fFillOnlySignal(false),
-  fFillJets(false),
-  fIsMCGenTree(false),
-  fDauInAcceptance(false),
-  fEvID(9999),
-  fRunNumber(9999),
-  fRunNumberPrevCand(9999),
-  fApplyNsigmaTPCDataCorr(false),
-  fSystNsigmaTPCDataCorr(AliAODPidHF::kNone),
-  fMeanNsigmaTPCPionData{},
-  fMeanNsigmaTPCKaonData{},
-  fMeanNsigmaTPCProtonData{},
-  fSigmaNsigmaTPCPionData{},
-  fSigmaNsigmaTPCKaonData{},
-  fSigmaNsigmaTPCProtonData{},
-  fPlimitsNsigmaTPCDataCorr{},
-  fNPbinsNsigmaTPCDataCorr(0),
-  fEtalimitsNsigmaTPCDataCorr{},
-  fNEtabinsNsigmaTPCDataCorr(0)
+  fFillJets(false)
 {
   //
   // Standard constructor
@@ -465,254 +465,43 @@ bool AliHFTreeHandler::SetSingleTrackVars(AliAODTrack* prongtracks[]) {
 }
 	       
 //________________________________________________________________
-bool AliHFTreeHandler::SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
-  //Jet is clustered with heavy flavour meson and the corresponding variables are set
-  if (!cand) return false;
-  fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
-  fFastJetWrapper->Clear();
-  FindJets(aod, cand, fJetRadius);
-  Int_t Jet_Index=Find_Candidate_Jet();
-  if (Jet_Index==-1) return false;
-  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
-  fastjet::PseudoJet Jet = Inclusive_Jets[Jet_Index];
-  std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(Jet_Index));
- 
-  //if(!Jet) return false;
+bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
 
-  Bool_t SoftDropSet=kFALSE;
-  Float_t Zg=0;
-  fZgJet=0;
-  fRgJet=0;
-
-  fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadius*2.5,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best); 
-  try{
-    fastjet::ClusterSequence Cluster_Sequence(Constituents, SubJet_Definition);
-    std::vector<fastjet::PseudoJet> Reclustered_Jet =  Cluster_Sequence.inclusive_jets(0.0);
-    Reclustered_Jet = sorted_by_pt(Reclustered_Jet);
-         
-    fastjet::PseudoJet Daughter_Jet = Reclustered_Jet[0];
-    fastjet::PseudoJet Parent_SubJet_1; 
-    fastjet::PseudoJet Parent_SubJet_2;  
+  AliHFJetFinder HFJetFinder;
+  HFJetFinder.SetJetRadius(fJetRadius);
+  AliHFJet HFJet(HFJetFinder.GetHFMesonJet(array,cand));
 	  
-    while(Daughter_Jet.has_parents(Parent_SubJet_1,Parent_SubJet_2)){
-      if(Parent_SubJet_1.perp() < Parent_SubJet_2.perp()) std::swap(Parent_SubJet_1,Parent_SubJet_2);
-      Zg=Parent_SubJet_2.perp()/(Parent_SubJet_1.perp()+Parent_SubJet_2.perp());
-
-      if (Zg >= 0.1 && !SoftDropSet){ //Access to the values can be implemneted as setters once the code structure is finalised
-	fZgJet = Zg;
-	fRgJet = Parent_SubJet_1.delta_R(Parent_SubJet_2);
-	SoftDropSet=kTRUE;
-      }
-      Daughter_Jet=Parent_SubJet_1;
-    }
-
-         
-  } catch (fastjet::Error) { /*return -1;*/ }
-
-
-	  
-  fPtJet=Jet.perp();
-  fEtaJet=Jet.pseudorapidity();
-  fPhiJet=Jet.phi();
-  fDeltaEtaJetHadron=fEtaJet-cand->Eta();
-  fDeltaPhiJetHadron=RelativePhi(fPhiJet,cand->Phi());
-  fDeltaRJetHadron=TMath::Sqrt(fDeltaEtaJetHadron*fDeltaEtaJetHadron + fDeltaPhiJetHadron*fDeltaPhiJetHadron);
-  fNTracksJet=Constituents.size();
+  fPtJet=HFJet.GetPt();
+  fEtaJet=HFJet.GetEta();
+  fPhiJet=HFJet.GetPhi();
+  fDeltaEtaJetHadron=HFJet.GetDeltaEta();
+  fDeltaPhiJetHadron=HFJet.GetDeltaPhi();
+  fDeltaRJetHadron=HFJet.GetDeltaR();
+  fNTracksJet=HFJet.GetN();
   
-  
-
     return true;
 }
 
 
 //________________________________________________________________
-bool AliHFTreeHandler::SetGenJetVars(TClonesArray *arrayMC, AliAODMCParticle* mcPart, Double_t fJetRadius) {
+bool AliHFTreeHandler::SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart, Double_t fJetRadius) {
 
-  if (!mcPart) return false;
-  fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
-  fFastJetWrapper->Clear();
-  FindGenJets(arrayMC, mcPart, fJetRadius);
-  Int_t Jet_Index=Find_Candidate_Jet();
-  if (Jet_Index==-1) return false;
-  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
-  fastjet::PseudoJet Jet = Inclusive_Jets[Jet_Index];
-  std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(Jet_Index));
- 
-  //if(!Jet) return false;
-
-
-  Bool_t SoftDropSet=kFALSE;
-  Float_t Zg=0;
-  fZgGenJet=0;
-  fRgGenJet=0;
-
-  fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadius*2.5,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best); 
-  try{
-    fastjet::ClusterSequence Cluster_Sequence(Constituents, SubJet_Definition);
-    std::vector<fastjet::PseudoJet> Reclustered_Jet =  Cluster_Sequence.inclusive_jets(0.0);
-    Reclustered_Jet = sorted_by_pt(Reclustered_Jet);
-         
-    fastjet::PseudoJet Daughter_Jet = Reclustered_Jet[0];
-    fastjet::PseudoJet Parent_SubJet_1; 
-    fastjet::PseudoJet Parent_SubJet_2;  
+  AliHFJetFinder HFJetFinder;
+  HFJetFinder.SetJetRadius(fJetRadius);
+  AliHFJet HFJet(HFJetFinder.GetHFMesonMCJet(array,mcPart));
 	  
-    while(Daughter_Jet.has_parents(Parent_SubJet_1,Parent_SubJet_2)){
-      if(Parent_SubJet_1.perp() < Parent_SubJet_2.perp()) std::swap(Parent_SubJet_1,Parent_SubJet_2);
-      Zg=Parent_SubJet_2.perp()/(Parent_SubJet_1.perp()+Parent_SubJet_2.perp());
-
-      if (Zg >= 0.1 && !SoftDropSet){ //Access to the values can be implemneted as setters once the code structure is finalised
-	fZgGenJet = Zg;
-	fRgGenJet = Parent_SubJet_1.delta_R(Parent_SubJet_2);
-	SoftDropSet=kTRUE;
-      }
-      Daughter_Jet=Parent_SubJet_1;
-    }
-
-         
-  } catch (fastjet::Error) { /*return -1;*/ }
-
-  
-  fPtGenJet=Jet.perp();
-  fEtaGenJet=Jet.pseudorapidity();
-  fPhiGenJet=Jet.phi();
-  fDeltaEtaGenJetHadron=fEtaJet-mcPart->Eta();
-  fDeltaPhiGenJetHadron=RelativePhi(fPhiJet,mcPart->Phi());
-  fDeltaRGenJetHadron=TMath::Sqrt(fDeltaEtaJetHadron*fDeltaEtaJetHadron + fDeltaPhiJetHadron*fDeltaPhiJetHadron);
-  fNTracksGenJet=Constituents.size();
-  
-  
+  fPtJet=HFJet.GetPt();
+  fEtaJet=HFJet.GetEta();
+  fPhiJet=HFJet.GetPhi();
+  fDeltaEtaJetHadron=HFJet.GetDeltaEta();
+  fDeltaPhiJetHadron=HFJet.GetDeltaPhi();
+  fDeltaRJetHadron=HFJet.GetDeltaR();
+  fNTracksJet=HFJet.GetN();
 
     return true;
 }
 
-
-//________________________________________________________________________
-Float_t AliHFTreeHandler::RelativePhi(Float_t Phi1, Float_t Phi2){
-
-  if(Phi1 < -1*TMath::Pi()) Phi1 += (2*TMath::Pi()); // Turns the range of 0to2Pi into -PitoPi ???????????                                                             
-  else if (Phi1 > TMath::Pi()) Phi1 -= (2*TMath::Pi());
-  if(Phi2 < -1*TMath::Pi()) Phi2 += (2*TMath::Pi());
-  else if (Phi2 > TMath::Pi()) Phi2 -= (2*TMath::Pi());
-  Double_t DeltaPhi=Phi2-Phi1;
-  if(DeltaPhi < -1*TMath::Pi()) DeltaPhi += (2*TMath::Pi());
-  else if (DeltaPhi > TMath::Pi()) DeltaPhi -= (2*TMath::Pi());
-  return DeltaPhi;
-}
-
-//________________________________________________________________
-void AliHFTreeHandler::FindJets(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
-  //Performs jet finding. Jets are stored in the fFastJetWrapper object
-
-  fFastJetWrapper->SetAreaType(fastjet::active_area); 
-  fFastJetWrapper->SetGhostArea(0.005);  
-  fFastJetWrapper->SetR(fJetRadius);
-  fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
-  fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0));
-
-
-
-  
-  std::vector<AliVTrack *> daughters;
-  daughters.clear();
-
-  AliVTrack *daughter;
-  for (Int_t i = 0; i < cand->GetNDaughters(); i++) {
-    daughter = dynamic_cast<AliVTrack *>(cand->GetDaughter(i));
-    if (!daughter) continue;
-    daughters.push_back(daughter);
-  }
-
-  
-  AliAODTrack *track=NULL;
-  for (Int_t i=0; i<aod->GetNumberOfTracks(); i++) {
-    track=dynamic_cast<AliAODTrack *>(aod->GetTrack(i));   
-    if(!CheckTrack(track)) continue; //what if Dmeson isnt accepted?
-    for (Int_t j=0; j<daughters.size(); j++){
-      if (track->GetID()==daughters[j]->GetID()) continue;
-    }
-    fFastJetWrapper->AddInputVector(track->Px(), track->Py(), track->Pz(), track->E(),i+100); 
-  }
-  fFastJetWrapper->AddInputVector(cand->Px(), cand->Py(), cand->Pz(), cand->E(cand->PdgCode()),0); //is the mass set correctly?
-  fFastJetWrapper->Run();
-  //delete track;
-}
-
-//________________________________________________________________
-void AliHFTreeHandler::FindGenJets(TClonesArray *arrayMC, AliAODMCParticle* mcPart, Double_t fJetRadius) {
-
-  fFastJetWrapper->SetAreaType(fastjet::active_area); 
-  fFastJetWrapper->SetGhostArea(0.005);  
-  fFastJetWrapper->SetR(fJetRadius);
-  fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
-  fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0));
-
-  std::vector<AliAODMCParticle *> daughters;
-  daughters.clear();
-
-  AliAODMCParticle *daughter;
-  for (Int_t i = 0; i < mcPart->GetNDaughters(); i++) {
-    daughter = dynamic_cast<AliAODMCParticle *>(arrayMC->At(mcPart->GetDaughterLabel(i)));
-    if (!daughter) continue;
-    daughters.push_back(daughter);
-  }
-
-  
-  AliAODMCParticle *particle=NULL;
-  for(Int_t i=0; i<arrayMC->GetEntriesFast(); i++){
-    particle = dynamic_cast<AliAODMCParticle*>(arrayMC->At(i));
-    if(!CheckParticle(particle)) continue;
-    for (Int_t j=0; j<daughters.size(); j++){
-      if (particle->GetLabel()==daughters[j]->GetLabel()) continue;
-    }
-    fFastJetWrapper->AddInputVector(particle->Px(), particle->Py(),particle->Pz(), particle->E(),i+100);
-  }
-  fFastJetWrapper->AddInputVector( mcPart->Px(),  mcPart->Py(),  mcPart->Pz(),  mcPart->E(),0);
-  fFastJetWrapper->Run();
-  //delete particle;
-}
-
-//________________________________________________________________
-Bool_t AliHFTreeHandler::CheckTrack(AliAODTrack *track) { //add all cuts properly later
-  if(!track) return false;
-  if(track->Pt() > 100.0) return false;
-  if(track->Pt() < 1e-6) return false;
-  if(TMath::Abs(track->Eta()) > 0.9) return false;
-  return true;
-}
-
-//________________________________________________________________
-Bool_t AliHFTreeHandler::CheckParticle(AliAODMCParticle *particle) {
-  if(!particle) return false;
-  if(!particle->IsPrimary()) return false;
-  if(particle->Pt() < 1e-6) return false;
-  return true;
-}
-
-
-
-
-
-
-
-//________________________________________________________________
-Int_t AliHFTreeHandler::Find_Candidate_Jet() {
-  //Finds the label of the jet with the heavy flvaour meson
-  std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets(); 
-  for (UInt_t i_Jet=0; i_Jet < Inclusive_Jets.size(); i_Jet++){
-    std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i_Jet));
-    for (UInt_t i_Constituents = 0; i_Constituents < Constituents.size(); i_Constituents++) { 
-      if (Constituents[i_Constituents].user_index() == 0) {
-	return i_Jet; 
-      }
-    }
-  }
-  return -1;
-}
-
-
-
-		       
-		       
+	       
 //________________________________________________________________
 bool AliHFTreeHandler::SetPidVars(AliAODTrack* prongtracks[], AliPIDResponse* pidrespo, bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF) 
 {

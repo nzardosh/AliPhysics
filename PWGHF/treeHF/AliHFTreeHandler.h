@@ -30,9 +30,8 @@
 #include "AliAODPidHF.h"
 #include "AliEmcalJet.h"
 #include "AliTrackContainer.h"
-#include "AliFJWrapper.h"
-#include "FJ_includes.h"
-#include "AliAODEvent.h"
+#include "AliHFJetFinder.h"
+#include "AliHFJet.h"
 
 class AliHFTreeHandler : public TObject
 {
@@ -86,8 +85,8 @@ class AliHFTreeHandler : public TObject
     //for MC gen --> common implementation
     TTree* BuildTreeMCGen(TString name, TString title);
     bool SetMCGenVariables(int runnumber, unsigned int eventID, AliAODMCParticle* mcpart);
-    bool SetJetVars(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius);
-    bool SetGenJetVars(TClonesArray *arrayMC, AliAODMCParticle* mcPart, Double_t fJetRadius);
+    bool SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, Double_t fJetRadius);
+    bool SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart, Double_t fJetRadius);
 
     void FillTree() { //to be called for each candidate!
       if(fFillOnlySignal && !(fCandType&kSignal)) { //if fill only signal and not signal candidate, do not store 
@@ -178,13 +177,6 @@ class AliHFTreeHandler : public TObject
     void AddPidBranches(bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF);
     bool SetSingleTrackVars(AliAODTrack* prongtracks[]);
     bool SetPidVars(AliAODTrack* prongtracks[], AliPIDResponse* pidrespo, bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF);
-
-    Float_t RelativePhi(Float_t Phi1, Float_t Phi2);
-    void FindJets(AliAODEvent *aod, AliAODRecoDecayHF* cand, Double_t fJetRadius);
-    void FindGenJets(TClonesArray *arrayMC, AliAODMCParticle* mcPart, Double_t fJetRadius);
-    Bool_t CheckTrack(AliAODTrack *track);
-    Bool_t CheckParticle(AliAODMCParticle *particle);
-    Int_t Find_Candidate_Jet();
   
     //utils methods
     double CombineNsigmaDiffDet(double nsigmaTPC, double nsigmaTOF);
