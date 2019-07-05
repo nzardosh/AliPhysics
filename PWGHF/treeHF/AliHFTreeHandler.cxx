@@ -79,15 +79,6 @@ AliHFTreeHandler::AliHFTreeHandler():
   fNTracksJet(-9999.),
   fZgJet(-9999.),
   fRgJet(-9999.),
-  fPtGenJet(-9999.),
-  fEtaGenJet(-9999.),
-  fPhiGenJet(-9999.),
-  fDeltaEtaGenJetHadron(-9999.),
-  fDeltaPhiGenJetHadron(-9999.),
-  fDeltaRGenJetHadron(-9999.),
-  fNTracksGenJet(-9999.),
-  fZgGenJet(-9999.),
-  fRgGenJet(-9999.),
   fFastJetWrapper(0x0),
   fFillJets(false)
 {
@@ -175,15 +166,6 @@ AliHFTreeHandler::AliHFTreeHandler(int PIDopt):
   fNTracksJet(-9999.),
   fZgJet(-9999.),
   fRgJet(-9999.),
-  fPtGenJet(-9999.),
-  fEtaGenJet(-9999.),
-  fPhiGenJet(-9999.),
-  fDeltaEtaGenJetHadron(-9999.),
-  fDeltaPhiGenJetHadron(-9999.),
-  fDeltaRGenJetHadron(-9999.),
-  fNTracksGenJet(-9999.),
-  fZgGenJet(-9999.),
-  fRgGenJet(-9999.),
   fFastJetWrapper(0x0),
   fFillJets(false)
 {
@@ -252,7 +234,7 @@ TTree* AliHFTreeHandler::BuildTreeMCGen(TString name, TString title) {
   fTreeVar->Branch("phi_cand",&fPhi);
   fTreeVar->Branch("dau_in_acc",&fDauInAcceptance);
 
-  if (fFillJets) AddGenJetBranches(); //Gen Jet Branches added here
+  if (fFillJets) AddJetBranches(); //Gen Jet Branches added here
 
   return fTreeVar;
 }
@@ -353,23 +335,6 @@ void AliHFTreeHandler::AddJetBranches() { //Jet brances added
     
 }
 
-
-//________________________________________________________________
-void AliHFTreeHandler::AddGenJetBranches() {//Jet Gen brances added
-
-    fTreeVar->Branch("pt_jet",&fPtGenJet);
-    fTreeVar->Branch("eta_jet",&fEtaGenJet);
-    fTreeVar->Branch("phi_jet",&fPhiGenJet);
-    fTreeVar->Branch("delta_eta_jet",&fDeltaEtaGenJetHadron);
-    fTreeVar->Branch("delta_phi_jet",&fDeltaPhiGenJetHadron);
-    fTreeVar->Branch("delta_r_jet",&fDeltaRGenJetHadron);
-    fTreeVar->Branch("ntracks_jet",&fNTracksGenJet);
-    fTreeVar->Branch("zg_jet",&fZgGenJet);
-    fTreeVar->Branch("rg_jet",&fRgGenJet);
-    
-}
-		   
-
 //________________________________________________________________
 void AliHFTreeHandler::AddPidBranches(bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF) 
 {
@@ -469,15 +434,10 @@ bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, 
 
   AliHFJetFinder HFJetFinder;
   HFJetFinder.SetJetRadius(fJetRadius);
+  if (fDoJetSubstructure) HFJetFinder.SetDoJetSubstructure(fDoJetSubstructure);
   AliHFJet HFJet(HFJetFinder.GetHFMesonJet(array,cand));
 	  
-  fPtJet=HFJet.GetPt();
-  fEtaJet=HFJet.GetEta();
-  fPhiJet=HFJet.GetPhi();
-  fDeltaEtaJetHadron=HFJet.GetDeltaEta();
-  fDeltaPhiJetHadron=HFJet.GetDeltaPhi();
-  fDeltaRJetHadron=HFJet.GetDeltaR();
-  fNTracksJet=HFJet.GetN();
+  SetJetTreeVars(HFJet);
   
     return true;
 }
@@ -488,8 +448,17 @@ bool AliHFTreeHandler::SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPa
 
   AliHFJetFinder HFJetFinder;
   HFJetFinder.SetJetRadius(fJetRadius);
+  if (fDoJetSubstructure) HFJetFinder.SetDoJetSubstructure(fDoJetSubstructure);
   AliHFJet HFJet(HFJetFinder.GetHFMesonMCJet(array,mcPart));
 	  
+  SetJetTreeVars(HFJet);
+
+    return true;
+}
+
+//________________________________________________________________
+void AliHFTreeHandler::SetJetTreeVars(AliHFJet HFJet){
+
   fPtJet=HFJet.GetPt();
   fEtaJet=HFJet.GetEta();
   fPhiJet=HFJet.GetPhi();
@@ -497,11 +466,15 @@ bool AliHFTreeHandler::SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPa
   fDeltaPhiJetHadron=HFJet.GetDeltaPhi();
   fDeltaRJetHadron=HFJet.GetDeltaR();
   fNTracksJet=HFJet.GetN();
+  if (fDoJetSubstructure){
+    fZgJet=HFJet.GetZg();
+    fRgJet=HFJet.GetRg();
+  }
 
-    return true;
 }
 
-	       
+
+
 //________________________________________________________________
 bool AliHFTreeHandler::SetPidVars(AliAODTrack* prongtracks[], AliPIDResponse* pidrespo, bool usePionHypo, bool useKaonHypo, bool useProtonHypo, bool useTPC, bool useTOF) 
 {

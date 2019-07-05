@@ -51,7 +51,7 @@ class AliHFJetFinder : public TObject
 
   void SetHF(Bool_t b) {fHF=b;}
   void SetMC(Bool_t b) {fMC=b;}
-  void SetDoSubstructure(Bool_t b) {fDoSubstructure=b;}
+  void SetDoJetSubstructure(Bool_t b) {fDoJetSubstructure=b;}
   void SetRecoDecayHFCand(AliAODRecoDecayHF *RecoDecayHFCand) {fRecoDecayHFCand=RecoDecayHFCand;}
   void SetMCParticle(AliAODMCParticle *MCParticle) {fMCParticle=MCParticle;}
   void SetJetRadius (Float_t f) {fJetRadius = f; fFastJetWrapper->SetR(fJetRadius);}
@@ -61,7 +61,7 @@ class AliHFJetFinder : public TObject
   
   Bool_t                   fHF;
   Bool_t                   fMC;
-  Bool_t                   fDoSubstructure;
+  Bool_t                   fDoJetSubstructure;
   AliAODRecoDecayHF       *fRecoDecayHFCand;
   AliAODMCParticle        *fMCParticle;
   AliFJWrapper            *fFastJetWrapper;

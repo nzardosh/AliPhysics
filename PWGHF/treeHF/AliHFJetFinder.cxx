@@ -181,7 +181,7 @@ std::vector<AliHFJet> AliHFJetFinder::GetJets(TClonesArray *array) {
     std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i));
 
     AliHFJet HFJet;
-    if (fDoSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
+    if (fDoJetSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
 
     SetJetVariables(HFJet, Constituents, Jet, i, nullptr);
   
@@ -205,7 +205,7 @@ std::vector<AliHFJet> AliHFJetFinder::GetMCJets(TClonesArray *array) {
     std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i));
 
     AliHFJet HFJet;
-    if (fDoSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
+    if (fDoJetSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
 
     SetMCJetVariables(HFJet, Constituents, Jet, i, nullptr);
   
@@ -315,7 +315,7 @@ void AliHFJetFinder::SetJetVariables(AliHFJet& HFJet, std::vector<fastjet::Pseud
   else HFJet.fDeltaR=-99;
   HFJet.fN=Constituents.size();
 
-  if (fDoSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
+  if (fDoJetSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
   
 }
 
@@ -337,7 +337,7 @@ void AliHFJetFinder::SetMCJetVariables(AliHFJet& HFJet, std::vector<fastjet::Pse
   else HFJet.fDeltaR=-99;
   HFJet.fN=Constituents.size();
 
-  if (fDoSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
+  if (fDoJetSubstructure) SetJetSubstructureVariables(HFJet,Constituents);
   
 }
 
@@ -346,7 +346,6 @@ void AliHFJetFinder::SetMCJetVariables(AliHFJet& HFJet, std::vector<fastjet::Pse
 
 //________________________________________________________________
 void AliHFJetFinder::SetJetSubstructureVariables(AliHFJet& HFJet, std::vector<fastjet::PseudoJet> Constituents) {
-
 
   Bool_t SoftDropSet=kFALSE;
   Float_t Zg=0;

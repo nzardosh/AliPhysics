@@ -116,6 +116,7 @@ public:
 
     void SetFillJets(bool b) {fFillJets = b; }
     void SetJetRadius(Double_t d) {fJetRadius = d; }
+    void SetDoJetSubstructure(bool b) {fDoJetSubstructure = b; }
   
     void SetDsMassKKOption(AliHFTreeHandlerDstoKKpi::massKKopt opt) {fDsMassKKOpt=opt;}
     void SetLc2V0bachelorCalcSecoVtx(Int_t opt=1) {fLc2V0bachelorCalcSecoVtx=opt;}
@@ -324,6 +325,7 @@ private:
     bool                    fFillMass;                             ///< Mass
     bool                    fFillMatchingJetID;                    ///< jet matching
     bool                    fFillJets;                             //FillJetInfo
+    bool                    fDoJetSubstructure;                    //FillJetSubstructure
   
     bool fEnableNsigmaTPCDataCorr; /// flag to enable data-driven NsigmaTPC correction
     int fSystemForNsigmaTPCDataCorr; /// system for data-driven NsigmaTPC correction

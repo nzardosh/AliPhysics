@@ -205,6 +205,7 @@ fFillpTD(false),
 fFillMass(false),
 fFillMatchingJetID(false),
 fFillJets(false),
+fDoJetSubstructure(false),
 fEnableNsigmaTPCDataCorr(false),
 fSystemForNsigmaTPCDataCorr(AliAODPidHF::kNone)
 {
@@ -333,6 +334,7 @@ fFillpTD(false),
 fFillMass(false),
 fFillMatchingJetID(false),
 fFillJets(false),
+fDoJetSubstructure(false),
 fEnableNsigmaTPCDataCorr(false),
 fSystemForNsigmaTPCDataCorr(AliAODPidHF::kNone)
 {
@@ -769,6 +771,7 @@ void AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects()
         if(fReadMC && fWriteOnlySignal) fTreeHandlerD0->SetFillOnlySignal(fWriteOnlySignal);
         if(fEnableNsigmaTPCDataCorr) fTreeHandlerD0->EnableNsigmaTPCDataDrivenCorrection(fSystemForNsigmaTPCDataCorr);
 	fTreeHandlerD0->SetFillJets(fFillJets);
+	fTreeHandlerD0->SetDoJetSubstructure(fDoJetSubstructure);
         fVariablesTreeD0 = (TTree*)fTreeHandlerD0->BuildTree(nameoutput,nameoutput);
         fVariablesTreeD0->SetMaxVirtualSize(1.e+8/nEnabledTrees);
         fTreeEvChar->AddFriend(fVariablesTreeD0);
@@ -778,6 +781,7 @@ void AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects()
           TString nameoutput = "tree_D0_gen";
           fTreeHandlerGenD0 = new AliHFTreeHandlerD0toKpi(0);
 	  fTreeHandlerGenD0->SetFillJets(fFillJets);
+	  fTreeHandlerGenD0->SetDoJetSubstructure(fDoJetSubstructure);
           fGenTreeD0 = (TTree*)fTreeHandlerGenD0->BuildTreeMCGen(nameoutput,nameoutput);
           fGenTreeD0->SetMaxVirtualSize(1.e+8/nEnabledTrees);
           fTreeEvChar->AddFriend(fGenTreeD0);

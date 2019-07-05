@@ -87,6 +87,7 @@ class AliHFTreeHandler : public TObject
     bool SetMCGenVariables(int runnumber, unsigned int eventID, AliAODMCParticle* mcpart);
     bool SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, Double_t fJetRadius);
     bool SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart, Double_t fJetRadius);
+    void SetJetTreeVars(AliHFJet HFJet);
 
     void FillTree() { //to be called for each candidate!
       if(fFillOnlySignal && !(fCandType&kSignal)) { //if fill only signal and not signal candidate, do not store 
@@ -101,6 +102,7 @@ class AliHFTreeHandler : public TObject
     
     //common methods
     void SetFillJets(bool FillJets) {fFillJets=FillJets;}
+    void SetDoJetSubstructure(bool DoJetSubstructure) {fDoJetSubstructure=DoJetSubstructure;}
     void SetOptPID(int PIDopt) {fPidOpt=PIDopt;}
     void SetOptSingleTrackVars(int opt) {fSingleTrackOpt=opt;}
     void SetFillOnlySignal(bool fillopt=true) {fFillOnlySignal=fillopt;}
@@ -250,17 +252,9 @@ class AliHFTreeHandler : public TObject
     float fNTracksJet;  //number of tracks in the jet
     float fZgJet; //zg
     float fRgJet; //Rg
-    float fPtGenJet; ///Gen jet pt
-    float fEtaGenJet; ///Gen jet pseudorapidity
-    float fPhiGenJet; ///Gen jet azimuthal angle
-    float fDeltaEtaGenJetHadron; ///Gen jet hadron pseudorapidity
-    float fDeltaPhiGenJetHadron; ///Gen jet hadron azimuthal angle
-    float fDeltaRGenJetHadron; ///Gen jet hadron distance
-    float fNTracksGenJet;  //number of tracks in the Gen jet
-    float fZgGenJet; //zg
-    float fRgGenJet; //Rg
     AliFJWrapper *fFastJetWrapper;
     bool  fFillJets; //fill jets
+    bool  fDoJetSubstructure; //fill jet substructure
 
   /// \cond CLASSIMP
   ClassDef(AliHFTreeHandler,8); ///
