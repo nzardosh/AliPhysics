@@ -23,39 +23,30 @@ ClassImp(AliHFJetFinder);
 //________________________________________________________________
 AliHFJetFinder::AliHFJetFinder():
   fJetRadius(0.4),
-  fHF(false),
-  fMC(false),
-  fRecoDecayHFCand(0x0),
-  fMCParticle(0x0),
+  fJetAlgorithm(0),
+  fJetRecombScheme(0),
+  fJetGhostArea(0.005),
+  fJetAreaType(0),
+  fDoJetSubstructure(false),
   fFastJetWrapper(0x0)
 {
   //
   // Default constructor
-  fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
-  fFastJetWrapper->SetAreaType(fastjet::active_area); 
-  fFastJetWrapper->SetGhostArea(0.005);  
-  fFastJetWrapper->SetR(fJetRadius);
-  fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
-  fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0));
   //
 }
 
 //________________________________________________________________
 AliHFJetFinder::AliHFJetFinder(char *name):
   fJetRadius(0.4),
-  fHF(false),
-  fMC(false),
-  fRecoDecayHFCand(0x0),
-  fMCParticle(0x0),
+  fJetAlgorithm(0),
+  fJetRecombScheme(0),
+  fJetGhostArea(0.005),
+  fJetAreaType(0),
+  fDoJetSubstructure(false),
   fFastJetWrapper(0x0)
 {
-  fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
-  fFastJetWrapper->SetAreaType(fastjet::active_area); 
-  fFastJetWrapper->SetGhostArea(0.005);  
-  fFastJetWrapper->SetR(fJetRadius);
-  fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
-  fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0));
 }
+
 
 //________________________________________________________________
 AliHFJetFinder::~AliHFJetFinder()
@@ -66,14 +57,38 @@ AliHFJetFinder::~AliHFJetFinder()
   delete fFastJetWrapper;
 }
 
+//________________________________________________________________
+void AliHFJetFinder::SetFJWrapper()
+{
+
+  
+  fFastJetWrapper = new AliFJWrapper("fFastJetWrapper","fFastJetWrapper");
+
+  fFastJetWrapper->Clear();
+
+  fFastJetWrapper->SetR(fJetRadius);
+ 
+  if (fJetAlgorithm==0) fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
+  if (fJetAlgorithm==1) fFastJetWrapper->SetAlgorithm(fastjet::kt_algorithm);
+  if (fJetAlgorithm==2) fFastJetWrapper->SetAlgorithm(fastjet::cambridge_algorithm);
+
+  if (fJetRecombScheme==0) fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0)); //E-scheme
+  if (fJetRecombScheme==0) fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(1)); //pt-scheme
+
+  fFastJetWrapper->SetGhostArea(fJetGhostArea); 
+ 
+  if (fJetAreaType==0) fFastJetWrapper->SetAreaType(fastjet::active_area); 
+  if (fJetAreaType==1) fFastJetWrapper->SetAreaType(fastjet::passive_area);
+  if (fJetAreaType==2) fFastJetWrapper->SetAreaType(fastjet::voronoi_area); 
+}
 
 
 //________________________________________________________________
 AliHFJet AliHFJetFinder::GetHFMesonJet(TClonesArray *array, AliAODRecoDecayHF *cand){
   //Jet is clustered with heavy flavour meson and the corresponding variables are set
+  SetFJWrapper();
   AliHFJet HFJet;
   if (!cand) return HFJet;
-  fFastJetWrapper->Clear();
   FindJets(array,cand);
   Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return HFJet;
@@ -93,9 +108,9 @@ AliHFJet AliHFJetFinder::GetHFMesonJet(TClonesArray *array, AliAODRecoDecayHF *c
 //________________________________________________________________
 AliHFJet AliHFJetFinder::GetHFMesonMCJet(TClonesArray *array, AliAODMCParticle *mcpart){
   //Jet is clustered with heavy flavour meson and the corresponding variables are set
+  SetFJWrapper();
   AliHFJet HFJet;
   if (!mcpart) return HFJet;
-  fFastJetWrapper->Clear();
   FindMCJets(array,mcpart);
   Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return HFJet;
@@ -114,10 +129,10 @@ AliHFJet AliHFJetFinder::GetHFMesonMCJet(TClonesArray *array, AliAODMCParticle *
 //________________________________________________________________
 std::vector<AliHFJet> AliHFJetFinder::GetHFMesonJets(TClonesArray *array, AliAODRecoDecayHF *cand) {
   //Jet is clustered with heavy flavour meson and the corresponding variables are set
+  SetFJWrapper();
   std::vector<AliHFJet> HFJets;
   HFJets.clear();
   if (!cand) return HFJets;
-  fFastJetWrapper->Clear();
   FindJets(array, cand);
   Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return HFJets;
@@ -141,10 +156,10 @@ std::vector<AliHFJet> AliHFJetFinder::GetHFMesonJets(TClonesArray *array, AliAOD
 //________________________________________________________________
 std::vector<AliHFJet> AliHFJetFinder::GetHFMesonMCJets(TClonesArray *array, AliAODMCParticle *mcpart) {
   //Jet is clustered with heavy flavour meson and the corresponding variables are set
+  SetFJWrapper();
   std::vector<AliHFJet> HFJets;
   HFJets.clear();
   if (!mcpart) return HFJets;
-  fFastJetWrapper->Clear();
   FindMCJets(array, mcpart);
   Int_t Jet_Index=Find_Candidate_Jet();
   if (Jet_Index==-1) return HFJets;
@@ -170,9 +185,9 @@ std::vector<AliHFJet> AliHFJetFinder::GetHFMesonMCJets(TClonesArray *array, AliA
 //________________________________________________________________
 std::vector<AliHFJet> AliHFJetFinder::GetJets(TClonesArray *array) {
   //Jet is clustered with heavy flavour meson and the corresponding variables are set
+  SetFJWrapper();
   std::vector<AliHFJet> HFJets;
   HFJets.clear();
-  fFastJetWrapper->Clear();
   FindJets(array,nullptr);
 
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
@@ -194,9 +209,9 @@ std::vector<AliHFJet> AliHFJetFinder::GetJets(TClonesArray *array) {
 //________________________________________________________________
 std::vector<AliHFJet> AliHFJetFinder::GetMCJets(TClonesArray *array) {
   //Jet is clustered with heavy flavour meson and the corresponding variables are set
+  SetFJWrapper();
   std::vector<AliHFJet> HFJets;
   HFJets.clear();
-  fFastJetWrapper->Clear();
   FindMCJets(array,nullptr);
 
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();

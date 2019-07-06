@@ -32,7 +32,7 @@ class AliHFJetFinder : public TObject
 
   virtual ~AliHFJetFinder();
 
-  
+  void SetFJWrapper(); 
   AliHFJet GetHFMesonJet(TClonesArray *array, AliAODRecoDecayHF *cand);
   AliHFJet GetHFMesonMCJet(TClonesArray *array, AliAODMCParticle *mcpart);
   std::vector<AliHFJet> GetHFMesonJets(TClonesArray *array, AliAODRecoDecayHF *cand);
@@ -49,21 +49,21 @@ class AliHFJetFinder : public TObject
   Int_t Find_Candidate_Jet();
   Float_t RelativePhi(Float_t Phi1, Float_t Phi2);
 
-  void SetHF(Bool_t b) {fHF=b;}
-  void SetMC(Bool_t b) {fMC=b;}
-  void SetDoJetSubstructure(Bool_t b) {fDoJetSubstructure=b;}
-  void SetRecoDecayHFCand(AliAODRecoDecayHF *RecoDecayHFCand) {fRecoDecayHFCand=RecoDecayHFCand;}
-  void SetMCParticle(AliAODMCParticle *MCParticle) {fMCParticle=MCParticle;}
-  void SetJetRadius (Float_t f) {fJetRadius = f; fFastJetWrapper->SetR(fJetRadius);}
+  void SetDoJetSubstructure(Bool_t b)      {fDoJetSubstructure=b;}
+  void SetJetRadius(Float_t f)             {fJetRadius = f;}
+  void SetJetAlgorithm(Int_t i)            {fJetAlgorithm=i;}
+  void SetJetRecombScheme(Int_t i)         {fJetRecombScheme = i;}
+  void SetGhostArea(Float_t f)             {fJetGhostArea = f;}
+  void SetJetAreaType(Int_t i)             {fJetAreaType = i;}
   
 
   Float_t                  fJetRadius;
+  Int_t                    fJetAlgorithm;
+  Int_t                    fJetRecombScheme;
+  Float_t                  fJetGhostArea;
+  Int_t                    fJetAreaType;
   
-  Bool_t                   fHF;
-  Bool_t                   fMC;
   Bool_t                   fDoJetSubstructure;
-  AliAODRecoDecayHF       *fRecoDecayHFCand;
-  AliAODMCParticle        *fMCParticle;
   AliFJWrapper            *fFastJetWrapper;
 
 
