@@ -30,6 +30,7 @@
 // J. Norman, jaime.norman@cern.ch
 // G. Luparello, grazia.luparello@cern.ch
 // J. Mulligan, james.mulligan@berkeley.edu
+// N. Zardoshti, nima.zardoshti@cern.ch
 ////////////////////////////////////////////////////////////
 
 #include <Riostream.h>
@@ -1618,7 +1619,7 @@ void AliAnalysisTaskSEHFTreeCreator::Process2Prong(TClonesArray *array2prong, Al
                         if(!fReadMC || (issignal || isbkg)) {
                             fTreeHandlerD0->SetIsSelectedStd(isSelAnCutsD0, isSelTopoAnCutsD0, isSelPidAnCutsD0, isSelTracksAnCuts);
                             fTreeHandlerD0->SetVariables(fRunNumber,fEventID,ptGenD0,d,bfield,masshypo,fPIDresp);
-			    if (fFillJets) fTreeHandlerD0->SetJetVars(aod->GetTracks(),d,fJetRadius);
+			    if (fFillJets) fTreeHandlerD0->SetJetVars(aod->GetTracks(),d);
                             fTreeHandlerD0->FillTree();
                         }
                     }//end D0
@@ -1650,7 +1651,7 @@ void AliAnalysisTaskSEHFTreeCreator::Process2Prong(TClonesArray *array2prong, Al
                         if(!fReadMC || (issignal || isbkg)) {
                             fTreeHandlerD0->SetIsSelectedStd(isSelAnCutsD0bar, isSelTopoAnCutsD0bar, isSelPidAnCutsD0bar, isSelTracksAnCuts);
                             fTreeHandlerD0->SetVariables(fRunNumber,fEventID,ptGenD0,d,bfield,masshypo,fPIDresp);
-			    if (fFillJets) fTreeHandlerD0->SetJetVars(aod->GetTracks(),d,fJetRadius);
+			    if (fFillJets) fTreeHandlerD0->SetJetVars(aod->GetTracks(),d);
                             fTreeHandlerD0->FillTree();
                         }
                     }//end D0bar
@@ -2610,7 +2611,7 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
 	    fTreeHandlerGenD0->SetDauInAcceptance(isDaugInAcc);
 	    fTreeHandlerGenD0->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
 	    fTreeHandlerGenD0->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-	    if(fFillJets) fTreeHandlerGenD0->SetGenJetVars(arrayMC,mcPart, 0.4);
+	    if(fFillJets) fTreeHandlerGenD0->SetGenJetVars(arrayMC,mcPart);
 	    fTreeHandlerGenD0->FillTree();
         }
         else if(absPDG == 431 && fWriteVariableTreeDs) {

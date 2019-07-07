@@ -24,14 +24,14 @@ ClassImp(AliHFJetFinder);
 AliHFJetFinder::AliHFJetFinder():
   fMinJetPt(0.0),
   fJetRadius(0.4),
-  fJetAlgorithm(0),
-  fJetRecombScheme(0),
+  fJetAlgorithm(JetAlgorithm::AntiKt),
+  fJetRecombScheme(RecombScheme::E_Scheme),
   fJetGhostArea(0.005),
-  fJetAreaType(0),
+  fJetAreaType(AreaType::Active_Area),
   fMinSubJetPt(0.0),
   fSubJetRadius(0.0),
-  fSubJetAlgorithm(0),
-  fSubJetRecombScheme(0),
+  fSubJetAlgorithm(JetAlgorithm::CA),
+  fSubJetRecombScheme(RecombScheme::E_Scheme),
   fSoftDropZCut(0.1),
   fSoftDropBeta(0.0),
   fMinTrackPt(0.15),
@@ -94,20 +94,11 @@ void AliHFJetFinder::SetFJWrapper()
 
   fFastJetWrapper->Clear();
 
-  fFastJetWrapper->SetR(fJetRadius);
- 
-  if (fJetAlgorithm==0) fFastJetWrapper->SetAlgorithm(fastjet::antikt_algorithm);
-  if (fJetAlgorithm==1) fFastJetWrapper->SetAlgorithm(fastjet::kt_algorithm);
-  if (fJetAlgorithm==2) fFastJetWrapper->SetAlgorithm(fastjet::cambridge_algorithm);
-
-  if (fJetRecombScheme==0) fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(0)); //E-scheme
-  if (fJetRecombScheme==0) fFastJetWrapper->SetRecombScheme(static_cast<fastjet::RecombinationScheme>(1)); //pt-scheme
-
+  fFastJetWrapper->SetR(fJetRadius); 
+  fFastJetWrapper->SetAlgorithm(JetAlgorithm(fJetAlgorithm));
+  fFastJetWrapper->SetRecombScheme(RecombinationScheme(fJetRecombScheme));
   fFastJetWrapper->SetGhostArea(fJetGhostArea); 
- 
-  if (fJetAreaType==0) fFastJetWrapper->SetAreaType(fastjet::active_area); 
-  if (fJetAreaType==1) fFastJetWrapper->SetAreaType(fastjet::passive_area);
-  if (fJetAreaType==2) fFastJetWrapper->SetAreaType(fastjet::voronoi_area); 
+  fFastJetWrapper->SetAreaType(AreaType(fJetAreaType)); 
 }
 
 
@@ -403,14 +394,8 @@ void AliHFJetFinder::SetJetSubstructureVariables(AliHFJet& HFJet, std::vector<fa
   if (fSubJetRadius==0.0) fSubJetRadius=fJetRadius*2.5;
 
   
-  fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadius*2.5,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best);
+  fastjet::JetDefinition SubJet_Definition(JetAlgorithm(fSubJetAlgorithm), fSubJetRadius,RecombinationScheme(fSubJetRecombScheme), fastjet::Best);
 
-  if (fJetAlgorithm==0) SubJet_Definition.set_jet_algorithm(fastjet::antikt_algorithm);
-  if (fJetAlgorithm==1) SubJet_Definition.set_jet_algorithm(fastjet::kt_algorithm);
-  if (fJetAlgorithm==2) SubJet_Definition.set_jet_algorithm(fastjet::cambridge_algorithm);
-
-  if (fJetRecombScheme==0) SubJet_Definition.set_recombination_scheme(static_cast<fastjet::RecombinationScheme>(0)); //E-scheme
-  if (fJetRecombScheme==0) SubJet_Definition.set_recombination_scheme(static_cast<fastjet::RecombinationScheme>(1)); //pt-scheme
   
   try{
     fastjet::ClusterSequence Cluster_Sequence(Constituents, SubJet_Definition);
@@ -493,4 +478,25 @@ Float_t AliHFJetFinder::RelativePhi(Float_t Phi1, Float_t Phi2){
   if(DeltaPhi < -1*TMath::Pi()) DeltaPhi += (2*TMath::Pi());
   else if (DeltaPhi > TMath::Pi()) DeltaPhi -= (2*TMath::Pi());
   return DeltaPhi;
+}
+
+//________________________________________________________________________
+fastjet::JetFinder JetAlgorithm(Int_t JetAlgo){
+  if (JetAlgo==1) fastjet::kt_algorithm;
+  else if (JetAlgo==2) fastjet::cambridge_algorithm; 
+  else return fastjet::antikt_algorithm;
+
+}
+//________________________________________________________________________
+fastjet::RecombinationScheme RecombinationScheme(Int_t RecombScheme){
+  if (RecombScheme==1) fastjet::pt_scheme;
+  else return fastjet::E_scheme;
+
+}
+//________________________________________________________________________
+fastjet::AreaType AreaType(Int_t Area){
+  if (Area==1) fastjet::passive_area;
+  if (Area==2) fastjet::voronoi_area;
+  else return fastjet::active_area;
+
 }

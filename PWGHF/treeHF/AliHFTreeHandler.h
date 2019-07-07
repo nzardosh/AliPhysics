@@ -85,8 +85,8 @@ class AliHFTreeHandler : public TObject
     //for MC gen --> common implementation
     TTree* BuildTreeMCGen(TString name, TString title);
     bool SetMCGenVariables(int runnumber, unsigned int eventID, AliAODMCParticle* mcpart);
-    bool SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, Double_t fJetRadius);
-    bool SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart, Double_t fJetRadius);
+    bool SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand);
+    bool SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart);
     void SetJetTreeVars(AliHFJet HFJet);
 
     void FillTree() { //to be called for each candidate!

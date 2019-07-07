@@ -24,8 +24,21 @@
 class AliHFJetFinder : public TObject
 {
   public:
-  
 
+  enum JetAlgorithm{
+    AntiKt,
+    Kt,
+    CA
+  };
+  enum RecombScheme{
+    E_Scheme,
+    Pt_Scheme,
+  };
+  enum AreaType{
+    Active_Area,
+    Passive_Area,
+    Voronoi_Area
+  };
 
   AliHFJetFinder();
   AliHFJetFinder(char *name);
@@ -48,6 +61,10 @@ class AliHFJetFinder : public TObject
   Bool_t CheckParticle(AliAODMCParticle *particle);
   Int_t Find_Candidate_Jet();
   Float_t RelativePhi(Float_t Phi1, Float_t Phi2);
+  fastjet::JetFinder JetAlgorithm(Int_t JetAlgo);
+  fastjet::RecombinationScheme RecombinationScheme(Int_t RecombScheme);
+  fastjet::AreaType AreaType(Int_t Area);
+
 
   void SetDoJetSubstructure(Bool_t b)      {fDoJetSubstructure=b;}
   void SetMinJetPt(Float_t f)              {fMinJetPt = f;}

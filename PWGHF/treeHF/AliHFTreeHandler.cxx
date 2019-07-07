@@ -16,6 +16,7 @@
 // L. van Doremalen, lennart.van.doremalen@cern.ch
 // J. Norman, jaime.norman@cern.ch
 // G. Luparello, grazia.luparello@cern.ch
+// N. Zardoshti, nima.zardoshti@cern.ch
 /////////////////////////////////////////////////////////////
 
 #include <cmath>
@@ -430,10 +431,9 @@ bool AliHFTreeHandler::SetSingleTrackVars(AliAODTrack* prongtracks[]) {
 }
 	       
 //________________________________________________________________
-bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, Double_t fJetRadius) {
+bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand) {
 
   AliHFJetFinder HFJetFinder;
-  HFJetFinder.SetJetRadius(fJetRadius);
   if (fDoJetSubstructure) HFJetFinder.SetDoJetSubstructure(fDoJetSubstructure);
   AliHFJet HFJet(HFJetFinder.GetHFMesonJet(array,cand));
 	  
@@ -444,10 +444,9 @@ bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand, 
 
 
 //________________________________________________________________
-bool AliHFTreeHandler::SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart, Double_t fJetRadius) {
+bool AliHFTreeHandler::SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart) {
 
   AliHFJetFinder HFJetFinder;
-  HFJetFinder.SetJetRadius(fJetRadius);
   if (fDoJetSubstructure) HFJetFinder.SetDoJetSubstructure(fDoJetSubstructure);
   AliHFJet HFJet(HFJetFinder.GetHFMesonMCJet(array,mcPart));
 	  
