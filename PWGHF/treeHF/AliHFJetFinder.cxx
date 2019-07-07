@@ -20,6 +20,7 @@
 ClassImp(AliHFJetFinder);
 /// \endcond
 
+
 //________________________________________________________________
 AliHFJetFinder::AliHFJetFinder():
   fMinJetPt(0.0),
@@ -53,14 +54,14 @@ AliHFJetFinder::AliHFJetFinder():
 AliHFJetFinder::AliHFJetFinder(char *name):
   fMinJetPt(0.0),
   fJetRadius(0.4),
-  fJetAlgorithm(0),
-  fJetRecombScheme(0),
+  fJetAlgorithm(JetAlgorithm::AntiKt),
+  fJetRecombScheme(RecombScheme::E_Scheme),
   fJetGhostArea(0.005),
-  fJetAreaType(0),
+  fJetAreaType(AreaType::Active_Area),
   fMinSubJetPt(0.0),
   fSubJetRadius(0.0),
-  fSubJetAlgorithm(0),
-  fSubJetRecombScheme(0),
+  fSubJetAlgorithm(JetAlgorithm::CA),
+  fSubJetRecombScheme(RecombScheme::E_Scheme),
   fSoftDropZCut(0.1),
   fSoftDropBeta(0.0),
   fMinTrackPt(0.15),
@@ -481,22 +482,19 @@ Float_t AliHFJetFinder::RelativePhi(Float_t Phi1, Float_t Phi2){
 }
 
 //________________________________________________________________________
-fastjet::JetFinder JetAlgorithm(Int_t JetAlgo){
-  if (JetAlgo==1) fastjet::kt_algorithm;
-  else if (JetAlgo==2) fastjet::cambridge_algorithm; 
+fastjet::JetFinder AliHFJetFinder::JetAlgorithm(Int_t JetAlgo){
+  if (JetAlgo==1) return fastjet::kt_algorithm;
+  else if (JetAlgo==2) return fastjet::cambridge_algorithm; 
   else return fastjet::antikt_algorithm;
-
 }
 //________________________________________________________________________
-fastjet::RecombinationScheme RecombinationScheme(Int_t RecombScheme){
-  if (RecombScheme==1) fastjet::pt_scheme;
+fastjet::RecombinationScheme AliHFJetFinder::RecombinationScheme(Int_t RecombScheme){
+  if (RecombScheme==1) return fastjet::pt_scheme;
   else return fastjet::E_scheme;
-
 }
 //________________________________________________________________________
-fastjet::AreaType AreaType(Int_t Area){
-  if (Area==1) fastjet::passive_area;
-  if (Area==2) fastjet::voronoi_area;
+fastjet::AreaType AliHFJetFinder::AreaType(Int_t Area){
+  if (Area==1) return fastjet::passive_area;
+  if (Area==2) return fastjet::voronoi_area;
   else return fastjet::active_area;
-
 }
