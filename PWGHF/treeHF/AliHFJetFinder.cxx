@@ -22,11 +22,25 @@ ClassImp(AliHFJetFinder);
 
 //________________________________________________________________
 AliHFJetFinder::AliHFJetFinder():
+  fMinJetPt(0.0),
   fJetRadius(0.4),
   fJetAlgorithm(0),
   fJetRecombScheme(0),
   fJetGhostArea(0.005),
   fJetAreaType(0),
+  fMinSubJetPt(0.0),
+  fSubJetRadius(0.0),
+  fSubJetAlgorithm(0),
+  fSubJetRecombScheme(0),
+  fSoftDropZCut(0.1),
+  fSoftDropBeta(0.0),
+  fMinTrackPt(0.15),
+  fMaxTrackPt(100.0),
+  fMaxTrackEta(0.9),
+  fMinParticlePt(0.0),
+  fMaxParticlePt(1000.0),
+  fMaxParticleEta(0.9),
+  fCharged(1),
   fDoJetSubstructure(false),
   fFastJetWrapper(0x0)
 {
@@ -37,11 +51,25 @@ AliHFJetFinder::AliHFJetFinder():
 
 //________________________________________________________________
 AliHFJetFinder::AliHFJetFinder(char *name):
+  fMinJetPt(0.0),
   fJetRadius(0.4),
   fJetAlgorithm(0),
   fJetRecombScheme(0),
   fJetGhostArea(0.005),
   fJetAreaType(0),
+  fMinSubJetPt(0.0),
+  fSubJetRadius(0.0),
+  fSubJetAlgorithm(0),
+  fSubJetRecombScheme(0),
+  fSoftDropZCut(0.1),
+  fSoftDropBeta(0.0),
+  fMinTrackPt(0.15),
+  fMaxTrackPt(100.0),
+  fMaxTrackEta(0.9),
+  fMinParticlePt(0.0),
+  fMaxParticlePt(1000.0),
+  fMaxParticleEta(0.9),
+  fCharged(1),
   fDoJetSubstructure(false),
   fFastJetWrapper(0x0)
 {
@@ -96,6 +124,7 @@ AliHFJet AliHFJetFinder::GetHFMesonJet(TClonesArray *array, AliAODRecoDecayHF *c
  
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
   fastjet::PseudoJet Jet = Inclusive_Jets[Jet_Index];
+  if (Jet.perp() < fMinJetPt) return HFJet;
   std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(Jet_Index));
 
   SetJetVariables(HFJet, Constituents, Jet, 0, cand); 
@@ -118,6 +147,7 @@ AliHFJet AliHFJetFinder::GetHFMesonMCJet(TClonesArray *array, AliAODMCParticle *
  
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
   fastjet::PseudoJet Jet = Inclusive_Jets[Jet_Index];
+  if (Jet.perp() < fMinJetPt) return HFJet;
   std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(Jet_Index));
 
   SetMCJetVariables(HFJet, Constituents, Jet, 0, mcpart);
@@ -141,6 +171,7 @@ std::vector<AliHFJet> AliHFJetFinder::GetHFMesonJets(TClonesArray *array, AliAOD
   
   for (Int_t i=0; i<Inclusive_Jets.size(); i++){
     fastjet::PseudoJet Jet = Inclusive_Jets[i];
+    if (Jet.perp() < fMinJetPt) continue;
     std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i));
 
     AliHFJet HFJet;
@@ -168,6 +199,7 @@ std::vector<AliHFJet> AliHFJetFinder::GetHFMesonMCJets(TClonesArray *array, AliA
   
   for (Int_t i=0; i<Inclusive_Jets.size(); i++){
     fastjet::PseudoJet Jet = Inclusive_Jets[i];
+    if (Jet.perp() < fMinJetPt) continue;
     std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i));
 
     AliHFJet HFJet;
@@ -193,6 +225,7 @@ std::vector<AliHFJet> AliHFJetFinder::GetJets(TClonesArray *array) {
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
   for (Int_t i=0; i<Inclusive_Jets.size(); i++){
     fastjet::PseudoJet Jet = Inclusive_Jets[i];
+    if (Jet.perp() < fMinJetPt) continue;
     std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i));
 
     AliHFJet HFJet;
@@ -217,6 +250,7 @@ std::vector<AliHFJet> AliHFJetFinder::GetMCJets(TClonesArray *array) {
   std::vector<fastjet::PseudoJet> Inclusive_Jets = fFastJetWrapper->GetInclusiveJets();
   for (Int_t i=0; i<Inclusive_Jets.size(); i++){
     fastjet::PseudoJet Jet = Inclusive_Jets[i];
+    if (Jet.perp() < fMinJetPt) continue;
     std::vector<fastjet::PseudoJet> Constituents(fFastJetWrapper->GetJetConstituents(i));
 
     AliHFJet HFJet;
@@ -364,11 +398,23 @@ void AliHFJetFinder::SetJetSubstructureVariables(AliHFJet& HFJet, std::vector<fa
 
   Bool_t SoftDropSet=kFALSE;
   Float_t Zg=0;
+  Float_t Rg=0;
 
-fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadius*2.5,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best); 
+  if (fSubJetRadius==0.0) fSubJetRadius=fJetRadius*2.5;
+
+  
+  fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadius*2.5,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best);
+
+  if (fJetAlgorithm==0) SubJet_Definition.set_jet_algorithm(fastjet::antikt_algorithm);
+  if (fJetAlgorithm==1) SubJet_Definition.set_jet_algorithm(fastjet::kt_algorithm);
+  if (fJetAlgorithm==2) SubJet_Definition.set_jet_algorithm(fastjet::cambridge_algorithm);
+
+  if (fJetRecombScheme==0) SubJet_Definition.set_recombination_scheme(static_cast<fastjet::RecombinationScheme>(0)); //E-scheme
+  if (fJetRecombScheme==0) SubJet_Definition.set_recombination_scheme(static_cast<fastjet::RecombinationScheme>(1)); //pt-scheme
+  
   try{
     fastjet::ClusterSequence Cluster_Sequence(Constituents, SubJet_Definition);
-    std::vector<fastjet::PseudoJet> Reclustered_Jet =  Cluster_Sequence.inclusive_jets(0.0);
+    std::vector<fastjet::PseudoJet> Reclustered_Jet =  Cluster_Sequence.inclusive_jets(fMinSubJetPt);
     Reclustered_Jet = sorted_by_pt(Reclustered_Jet);
          
     fastjet::PseudoJet Daughter_Jet = Reclustered_Jet[0];
@@ -378,10 +424,11 @@ fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadiu
     while(Daughter_Jet.has_parents(Parent_SubJet_1,Parent_SubJet_2)){
       if(Parent_SubJet_1.perp() < Parent_SubJet_2.perp()) std::swap(Parent_SubJet_1,Parent_SubJet_2);
       Zg=Parent_SubJet_2.perp()/(Parent_SubJet_1.perp()+Parent_SubJet_2.perp());
+      Rg=Parent_SubJet_1.delta_R(Parent_SubJet_2);
 
-      if (Zg >= 0.1 && !SoftDropSet){ //Access to the values can be implemneted as setters once the code structure is finalised
+      if (Zg >= fSoftDropZCut*TMath::Power(Rg/fJetRadius,fSoftDropBeta) &&  !SoftDropSet){ //Access to the values can be implemneted as setters once the code structure is finalised
 	HFJet.fZg = Zg;
-	HFJet.fRg = Parent_SubJet_1.delta_R(Parent_SubJet_2);
+	HFJet.fRg = Rg;
 	SoftDropSet=kTRUE;
       }
       Daughter_Jet=Parent_SubJet_1;
@@ -398,9 +445,9 @@ fastjet::JetDefinition SubJet_Definition(fastjet::cambridge_algorithm, fJetRadiu
 //________________________________________________________________
 Bool_t AliHFJetFinder::CheckTrack(AliAODTrack *track) { //add all cuts properly later
   if(!track) return false;
-  if(track->Pt() > 100.0) return false;
-  if(track->Pt() < 1e-6) return false;
-  if(TMath::Abs(track->Eta()) > 0.9) return false;
+  if(track->Pt() > fMaxTrackPt) return false;
+  if(track->Pt() < fMinTrackPt) return false;
+  if(TMath::Abs(track->Eta()) > fMaxTrackEta) return false;
   return true;
 }
 
@@ -408,8 +455,11 @@ Bool_t AliHFJetFinder::CheckTrack(AliAODTrack *track) { //add all cuts properly 
 Bool_t AliHFJetFinder::CheckParticle(AliAODMCParticle *particle) {
   if(!particle) return false;
   if(!particle->IsPrimary()) return false;
-  if(particle->Pt() < 1e-6) return false;
-  if (particle->Charge()==0) return false;
+  if(particle->Pt() > fMaxParticlePt) return false;
+  if(particle->Pt() < fMinParticlePt) return false;
+  if(TMath::Abs(particle->Eta()) > fMaxParticleEta) return false;
+  if (fCharged==1 && particle->Charge()==0) return false;
+  if (fCharged==2 && particle->Charge()!=0) return false;
   return true;
 }
 
