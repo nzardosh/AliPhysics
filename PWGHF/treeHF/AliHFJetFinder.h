@@ -8,7 +8,7 @@
 
 //*************************************************************************
 // \class AliHFJetFinder
-// \helper class to handle jet finding, matching and reclustering
+// \helper class to handle jet finding, matching and substructure
 // \authors:
 // N. Zardoshti, nima.zardoshti@cern.ch
 /////////////////////////////////////////////////////////////
@@ -26,18 +26,23 @@ class AliHFJetFinder : public TObject
   public:
 
   enum JetAlgorithm{
-    AntiKt,
-    Kt,
-    CA
+    antikt,
+    kt,
+    ca
   };
   enum RecombScheme{
-    E_Scheme,
-    Pt_Scheme,
+    e_scheme,
+    pt_scheme
   };
   enum AreaType{
-    Active_Area,
-    Passive_Area,
-    Voronoi_Area
+    active,
+    passive,
+    voronoi
+  };
+  enum Charge{
+    charged,
+    full,
+    neutral
   };
 
   AliHFJetFinder();
@@ -46,24 +51,24 @@ class AliHFJetFinder : public TObject
   virtual ~AliHFJetFinder();
 
   void SetFJWrapper(); 
-  AliHFJet GetHFMesonJet(TClonesArray *array, AliAODRecoDecayHF *cand);
-  AliHFJet GetHFMesonMCJet(TClonesArray *array, AliAODMCParticle *mcpart);
-  std::vector<AliHFJet> GetHFMesonJets(TClonesArray *array, AliAODRecoDecayHF *cand);
-  std::vector<AliHFJet> GetHFMesonMCJets(TClonesArray *array, AliAODMCParticle *mcpart);
+  AliHFJet GetHFJet(TClonesArray *array, AliAODRecoDecayHF *cand);
+  AliHFJet GetHFMCJet(TClonesArray *array, AliAODMCParticle *mcpart);
+  std::vector<AliHFJet> GetHFJets(TClonesArray *array, AliAODRecoDecayHF *cand);
+  std::vector<AliHFJet> GetHFMCJets(TClonesArray *array, AliAODMCParticle *mcpart);
   std::vector<AliHFJet> GetJets(TClonesArray *array);
   std::vector<AliHFJet> GetMCJets(TClonesArray *array);
   void FindJets(TClonesArray *array, AliAODRecoDecayHF *cand=nullptr);
   void FindMCJets(TClonesArray *array, AliAODMCParticle *mcpart=nullptr);
-  void SetJetVariables(AliHFJet& HFJet, std::vector<fastjet::PseudoJet> Constituents, fastjet::PseudoJet Jet, Int_t JetID, AliAODRecoDecayHF *cand=nullptr);
-  void SetMCJetVariables(AliHFJet& HFJet, std::vector<fastjet::PseudoJet> Constituents, fastjet::PseudoJet Jet, Int_t JetID, AliAODMCParticle *mcpart=nullptr);
-  void SetJetSubstructureVariables(AliHFJet& HFJet, std::vector<fastjet::PseudoJet> Constituents);
+  void SetJetVariables(AliHFJet& hfjet, const std::vector<fastjet::PseudoJet>& constituents, const fastjet::PseudoJet& jet, Int_t jetID, AliAODRecoDecayHF *cand=nullptr);
+  void SetMCJetVariables(AliHFJet& hfjet, const std::vector<fastjet::PseudoJet>& constituents, const fastjet::PseudoJet& jet, Int_t jetID, AliAODMCParticle *mcpart=nullptr);
+  void SetJetSubstructureVariables(AliHFJet& hfjet, const std::vector<fastjet::PseudoJet>& constituents);
   Bool_t CheckTrack(AliAODTrack *track);
   Bool_t CheckParticle(AliAODMCParticle *particle);
   Int_t Find_Candidate_Jet();
-  Float_t RelativePhi(Float_t Phi1, Float_t Phi2);
-  fastjet::JetFinder JetAlgorithm(Int_t JetAlgo);
-  fastjet::RecombinationScheme RecombinationScheme(Int_t RecombScheme);
-  fastjet::AreaType AreaType(Int_t Area);
+  Float_t RelativePhi(Float_t phi_1, Float_t phi_2);
+  fastjet::JetFinder JetAlgorithm(Int_t jetalgo);
+  fastjet::RecombinationScheme RecombinationScheme(Int_t recombscheme);
+  fastjet::AreaType AreaType(Int_t area);
 
 
   void SetDoJetSubstructure(Bool_t b)      {fDoJetSubstructure=b;}

@@ -87,7 +87,7 @@ class AliHFTreeHandler : public TObject
     bool SetMCGenVariables(int runnumber, unsigned int eventID, AliAODMCParticle* mcpart);
     bool SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand);
     bool SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart);
-    void SetJetTreeVars(AliHFJet HFJet);
+    void SetJetTreeVars(AliHFJet& hfjet);
 
     void FillTree() { //to be called for each candidate!
       if(fFillOnlySignal && !(fCandType&kSignal)) { //if fill only signal and not signal candidate, do not store 

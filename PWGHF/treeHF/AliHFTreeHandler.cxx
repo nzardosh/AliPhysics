@@ -433,11 +433,11 @@ bool AliHFTreeHandler::SetSingleTrackVars(AliAODTrack* prongtracks[]) {
 //________________________________________________________________
 bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand) {
 
-  AliHFJetFinder HFJetFinder;
-  if (fDoJetSubstructure) HFJetFinder.SetDoJetSubstructure(fDoJetSubstructure);
-  AliHFJet HFJet(HFJetFinder.GetHFMesonJet(array,cand));
+  AliHFJetFinder hfjetfinder;
+  if (fDoJetSubstructure) hfjetfinder.SetDoJetSubstructure(fDoJetSubstructure);
+  AliHFJet hfjet(hfjetfinder.GetHFJet(array,cand));
 	  
-  SetJetTreeVars(HFJet);
+  SetJetTreeVars(hfjet);
   
     return true;
 }
@@ -446,28 +446,28 @@ bool AliHFTreeHandler::SetJetVars(TClonesArray *array, AliAODRecoDecayHF* cand) 
 //________________________________________________________________
 bool AliHFTreeHandler::SetGenJetVars(TClonesArray *array, AliAODMCParticle* mcPart) {
 
-  AliHFJetFinder HFJetFinder;
-  if (fDoJetSubstructure) HFJetFinder.SetDoJetSubstructure(fDoJetSubstructure);
-  AliHFJet HFJet(HFJetFinder.GetHFMesonMCJet(array,mcPart));
+  AliHFJetFinder hfjetfinder;
+  if (fDoJetSubstructure) hfjetfinder.SetDoJetSubstructure(fDoJetSubstructure);
+  AliHFJet hfjet(hfjetfinder.GetHFMCJet(array,mcPart));
 	  
-  SetJetTreeVars(HFJet);
+  SetJetTreeVars(hfjet);
 
     return true;
 }
 
 //________________________________________________________________
-void AliHFTreeHandler::SetJetTreeVars(AliHFJet HFJet){
+void AliHFTreeHandler::SetJetTreeVars(AliHFJet& hfjet){
 
-  fPtJet=HFJet.GetPt();
-  fEtaJet=HFJet.GetEta();
-  fPhiJet=HFJet.GetPhi();
-  fDeltaEtaJetHadron=HFJet.GetDeltaEta();
-  fDeltaPhiJetHadron=HFJet.GetDeltaPhi();
-  fDeltaRJetHadron=HFJet.GetDeltaR();
-  fNTracksJet=HFJet.GetN();
+  fPtJet=hfjet.GetPt();
+  fEtaJet=hfjet.GetEta();
+  fPhiJet=hfjet.GetPhi();
+  fDeltaEtaJetHadron=hfjet.GetDeltaEta();
+  fDeltaPhiJetHadron=hfjet.GetDeltaPhi();
+  fDeltaRJetHadron=hfjet.GetDeltaR();
+  fNTracksJet=hfjet.GetN();
   if (fDoJetSubstructure){
-    fZgJet=HFJet.GetZg();
-    fRgJet=HFJet.GetRg();
+    fZgJet=hfjet.GetZg();
+    fRgJet=hfjet.GetRg();
   }
 
 }

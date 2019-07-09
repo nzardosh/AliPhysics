@@ -8,7 +8,7 @@
 
 //*************************************************************************
 // \class AliHFJet
-// \helper class to handle jets
+// \helper class to handle jet objects
 // \authors:
 // N. Zardoshti, nima.zardoshti@cern.ch
 /////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ class AliHFJet : public TObject
   void Reset();
 
   Float_t GetID() {return fID;}
-  Float_t HFMeson() {return fHFMeson;}
+  Float_t GetHFMeson() {return fHFMeson;}
   Float_t GetPt() {return fPt;}
   Float_t GetEta() {return fEta;}
   Float_t GetPhi() {return fPhi;}
@@ -39,17 +39,17 @@ class AliHFJet : public TObject
 
     
 
-  Float_t fID;
-  Float_t fHFMeson;
-  Float_t fPt;
-  Float_t fEta;
-  Float_t fPhi;
-  Float_t fDeltaEta;
-  Float_t fDeltaPhi;
-  Float_t fDeltaR;
-  Float_t fN;
-  Float_t fZg;
-  Float_t fRg;
+  Float_t fID;        //unique (in event) jet ID
+  Float_t fHFMeson;   //determines if the jet contains the HF candidtae or particle
+  Float_t fPt;        //jet pT
+  Float_t fEta;       //jet pseudorapidity
+  Float_t fPhi;       //jet phi
+  Float_t fDeltaEta;  //pseudorapidity difference of jet axis and HF candidiate or particle
+  Float_t fDeltaPhi;  //phi difference of jet axis and HF candidiate or particle
+  Float_t fDeltaR;    //pseudorapidity-phi distnace of jet axis and HF candidiate or particle
+  Float_t fN;         //number of jet constituents
+  Float_t fZg;        //soft dropped splitting momentum fraction
+  Float_t fRg;        //soft dropped splitting angle
 
 
 
