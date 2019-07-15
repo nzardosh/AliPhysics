@@ -2653,9 +2653,10 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
 	  fTreeHandlerGenLctopKpi->FillTree();
 	}
       }
-    }  
-  }
+    }
+  }  
 }
+
 //--------------------------------------------------------
 Bool_t AliAnalysisTaskSEHFTreeCreator::CheckDaugAcc(TClonesArray* arrayMC,Int_t nProng, Int_t *labDau){
   /// check if the decay products are in the good eta and pt range
