@@ -467,23 +467,19 @@ fSystemForNsigmaTPCDataCorr(AliAODPidHF::kNone)
     DefineOutput(20,TTree::Class());
     // Output slot #21 stores the tree of the MC particle variables
     DefineOutput(21,TTree::Class());
-    // Output slot #6 stores the tree of the D0 Jet candidate variables after track selection
-    DefineOutput(22,TTree::Class());
-    // Output slot #7 stores the tree of the gen D0 Jet variables
-    DefineOutput(23,TTree::Class());
   
     // Set up separate output slot for each jet tree
     // (for simplicity, keep the jet trees in the last slots)
     for (int i=0; i<fillNJetTrees; i++) {
       // Output slot #20 stores the tree of the jet variables
-      DefineOutput(24+i,TTree::Class());
+      DefineOutput(22+i,TTree::Class());
     }
   
     // Set up separate output slot for each jet constituent tree (if enabled)
     if (fillJetConstituentTrees) {
       for (int i=0; i<fillNJetTrees; i++) {
         // Output slot #20 stores the tree of the jet variables
-        DefineOutput(24+fillNJetTrees+i,TTree::Class());
+        DefineOutput(22+fillNJetTrees+i,TTree::Class());
       }
     }
   
@@ -669,7 +665,7 @@ void AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects()
     if(fDebug > 1) printf("AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects() \n");
     
     const char* nameoutput=GetOutputSlot(1)->GetContainer()->GetName();
-    fNentries=new TH1F(nameoutput, "Number of events", 41,-0.5,37.5);
+    fNentries=new TH1F(nameoutput, "Number of events", 38,-0.5,37.5);
     fNentries->GetXaxis()->SetBinLabel(1,"n. evt. read");
     fNentries->GetXaxis()->SetBinLabel(2,"n. evt. matched dAOD");
     fNentries->GetXaxis()->SetBinLabel(3,"n. evt. mismatched dAOD");
@@ -706,9 +702,6 @@ void AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects()
     fNentries->GetXaxis()->SetBinLabel(34,"n. Lc2V0bachelor after filtering");
     fNentries->GetXaxis()->SetBinLabel(35,"n. Lc2V0bachelor after selection");
     fNentries->GetXaxis()->SetBinLabel(36,"n. of not on-the-fly rec Lc2V0bachelor");
-    fNentries->GetXaxis()->SetBinLabel(37,"n. D0 Jet after filtering");
-    fNentries->GetXaxis()->SetBinLabel(38,"n. D0 Jet after selection");
-    fNentries->GetXaxis()->SetBinLabel(39,"n. of not on-the-fly rec D0 Jet");
   
     nameoutput=GetOutputSlot(2)->GetContainer()->GetName();
     fHistoNormCounter=new TH2F(nameoutput, "Number of events for norm;;centrality", 5,-0.5,4.5,102,-1.,101.);
@@ -746,7 +739,7 @@ void AliAnalysisTaskSEHFTreeCreator::UserCreateOutputObjects()
   
 
     //
-    // Output slot 4-23 : trees of the candidate and event-characterization variables
+    // Output slot 4-17 : trees of the candidate and event-characterization variables
     //
     OpenFile(5);
     fTreeEvChar = new TTree("tree_event_char","tree_event_char");
@@ -1520,10 +1513,9 @@ void AliAnalysisTaskSEHFTreeCreator::Process2Prong(TClonesArray *array2prong, Al
             fNentries->Fill(12);
             nFilteredD0++;
             if((vHF->FillRecoCand(aod,d))) {//Fill the data members of the candidate only if they are empty.
-	      //no fiducial acceptance?????
                 //filtering cuts
                 Int_t isSelectedFilt     = fFiltCutsD0toKpi->IsSelected(d,AliRDHFCuts::kAll,aod); //selected
-                Int_t isSelectedPidFilt  = fFiltCutsD0toKpi->IsSelectedPID(d); //whats this?
+                Int_t isSelectedPidFilt  = fFiltCutsD0toKpi->IsSelectedPID(d);
                 bool isUsePidFilt = fFiltCutsD0toKpi->GetIsUsePID();
                 if(isUsePidFilt) fFiltCutsD0toKpi->SetUsePID(kFALSE);
                 Int_t isSelectedTopoFilt = fFiltCutsD0toKpi->IsSelected(d,AliRDHFCuts::kAll,aod);
@@ -2591,6 +2583,7 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
         }
  
         Int_t  deca = 0;
+	Int_t  deca2 = 0;
         Int_t  labDau[3] = {-1,-1,-1};
         Int_t  labDau2[3] = {-1,-1,-1}; //Needed for 2nd decay same particle
         Bool_t isDaugInAcc = kFALSE;
@@ -2623,15 +2616,6 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
           fTreeHandlerGenDs->SetMCGenVariables(fRunNumber,fEventID, mcPart);
           fTreeHandlerGenDs->FillTree();
         }
-        if(absPDG == 4122 && fWriteVariableTreeLctopKpi) {
-          deca = AliVertexingHFUtils::CheckLcpKpiDecay(arrayMC,mcPart,labDau);
-          if(deca<1 || labDau[0]==-1 || labDau[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
-          fTreeHandlerGenLctopKpi->SetDauInAcceptance(isDaugInAcc);
-          fTreeHandlerGenLctopKpi->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-          fTreeHandlerGenLctopKpi->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-          fTreeHandlerGenLctopKpi->FillTree();
-        }
         else if(absPDG == 521 && fWriteVariableTreeBplus) {
           deca = AliVertexingHFUtils::CheckBplusDecay(arrayMC,mcPart,labDau);
           if(deca!=1 || labDau[0]==-1 || labDau[1]<0) continue;
@@ -2650,17 +2634,26 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
           fTreeHandlerGenDstar->SetMCGenVariables(fRunNumber,fEventID, mcPart);
           fTreeHandlerGenDstar->FillTree();
         }
-        else if(absPDG == 4122 && fWriteVariableTreeLc2V0bachelor) {
-          deca = AliVertexingHFUtils::CheckLcV0bachelorDecay(arrayMC,mcPart,labDau2);
-          if(deca!=1 || labDau2[0]<0 || labDau2[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau2);
-          fTreeHandlerGenLc2V0bachelor->SetDauInAcceptance(isDaugInAcc);
-          fTreeHandlerGenLc2V0bachelor->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-          fTreeHandlerGenLc2V0bachelor->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-          fTreeHandlerGenLc2V0bachelor->FillTree();
+	else if(absPDG == 4122 && (fWriteVariableTreeLctopKpi || fWriteVariableTreeLc2V0bachelor)) {
+          deca = AliVertexingHFUtils::CheckLcpKpiDecay(arrayMC,mcPart,labDau);
+          deca2 = AliVertexingHFUtils::CheckLcV0bachelorDecay(arrayMC,mcPart,labDau2);
+          if(deca<1 || labDau[0]==-1 || labDau[1]<0){
+            if(deca2!=1 || labDau2[0]<0 || labDau2[1]<0 || !fWriteVariableTreeLc2V0bachelor) continue;
+            isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau2);
+            fTreeHandlerGenLc2V0bachelor->SetDauInAcceptance(isDaugInAcc);
+            fTreeHandlerGenLc2V0bachelor->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+            fTreeHandlerGenLc2V0bachelor->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+            fTreeHandlerGenLc2V0bachelor->FillTree();
+          } else if(fWriteVariableTreeLctopKpi) {
+            isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
+            fTreeHandlerGenLctopKpi->SetDauInAcceptance(isDaugInAcc);
+            fTreeHandlerGenLctopKpi->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+            fTreeHandlerGenLctopKpi->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+            fTreeHandlerGenLctopKpi->FillTree();
+          }
         }
       }
-    }  
+  }  
 }
 
 //--------------------------------------------------------
