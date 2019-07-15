@@ -1512,6 +1512,7 @@ void AliAnalysisTaskSEHFTreeCreator::Process2Prong(TClonesArray *array2prong, Al
         if(isD0tagged && fWriteVariableTreeD0){
             fNentries->Fill(12);
             nFilteredD0++;
+	    
             if((vHF->FillRecoCand(aod,d))) {//Fill the data members of the candidate only if they are empty.
                 //filtering cuts
                 Int_t isSelectedFilt     = fFiltCutsD0toKpi->IsSelected(d,AliRDHFCuts::kAll,aod); //selected
@@ -2564,95 +2565,95 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
     AliAODMCParticle* mcPart = dynamic_cast<AliAODMCParticle*>(arrayMC->At(iPart));
     Int_t absPDG = TMath::Abs(mcPart->GetPdgCode());
     
-      if(absPDG == 411 || absPDG == 421 || absPDG == 431 || absPDG == 4122 || absPDG == 521 || absPDG == 413) {
-        Bool_t isPrimary = kFALSE;
-        Bool_t isFeeddown = kFALSE;
-        //Bplus will always end up with orig=4, so primary
-        Int_t orig = AliVertexingHFUtils::CheckOrigin(arrayMC,mcPart,kTRUE);//Prompt = 4, FeedDown = 5
-        if(absPDG != 521) {
-            if(orig!=4 && orig!=5) continue; //keep only prompt or feed-down (except for Bplus, since prompt and FD are not selected in the reco part)
-        }
-
-        if(orig==4){
-          isPrimary = kTRUE;
-          isFeeddown = kFALSE;
-        }
-        else if(orig==5){
-          isPrimary = kFALSE;
-          isFeeddown = kTRUE;
-        }
- 
-        Int_t  deca = 0;
-	Int_t  deca2 = 0;
-        Int_t  labDau[3] = {-1,-1,-1};
-        Int_t  labDau2[3] = {-1,-1,-1}; //Needed for 2nd decay same particle
-        Bool_t isDaugInAcc = kFALSE;
-
-        if(absPDG == 411 && fWriteVariableTreeDplus) {
-          deca = AliVertexingHFUtils::CheckDplusDecay(arrayMC,mcPart,labDau);
-          if(deca<1 || labDau[0]<0 || labDau[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
-          fTreeHandlerGenDplus->SetDauInAcceptance(isDaugInAcc);
-          fTreeHandlerGenDplus->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-          fTreeHandlerGenDplus->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-          fTreeHandlerGenDplus->FillTree();
-        }
-        else if(absPDG == 421 && fWriteVariableTreeD0) {
-          deca = AliVertexingHFUtils::CheckD0Decay(arrayMC,mcPart,labDau);
-          if(deca!=1 || labDau[0]<0 || labDau[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,2,labDau);
-	    fTreeHandlerGenD0->SetDauInAcceptance(isDaugInAcc);
-	    fTreeHandlerGenD0->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-	    fTreeHandlerGenD0->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-	    if(fFillJets) fTreeHandlerGenD0->SetGenJetVars(arrayMC,mcPart);
-	    fTreeHandlerGenD0->FillTree();
-        }
-        else if(absPDG == 431 && fWriteVariableTreeDs) {
-          deca = AliVertexingHFUtils::CheckDsDecay(arrayMC,mcPart,labDau);
-          if(deca!=1 || labDau[0]<0 || labDau[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
-          fTreeHandlerGenDs->SetDauInAcceptance(isDaugInAcc);
-          fTreeHandlerGenDs->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-          fTreeHandlerGenDs->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-          fTreeHandlerGenDs->FillTree();
-        }
-        else if(absPDG == 521 && fWriteVariableTreeBplus) {
-          deca = AliVertexingHFUtils::CheckBplusDecay(arrayMC,mcPart,labDau);
-          if(deca!=1 || labDau[0]==-1 || labDau[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
-          fTreeHandlerGenBplus->SetDauInAcceptance(isDaugInAcc);
-          fTreeHandlerGenBplus->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-          fTreeHandlerGenBplus->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-          fTreeHandlerGenBplus->FillTree();
-        }
-        else if(absPDG == 413 && fWriteVariableTreeDstar) {
-          deca = AliVertexingHFUtils::CheckDstarDecay(arrayMC,mcPart,labDau);
-          if(deca!=1 || labDau[0]<0 || labDau[1]<0) continue;
-          isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
-          fTreeHandlerGenDstar->SetDauInAcceptance(isDaugInAcc);
-          fTreeHandlerGenDstar->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-          fTreeHandlerGenDstar->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-          fTreeHandlerGenDstar->FillTree();
-        }
-	else if(absPDG == 4122 && (fWriteVariableTreeLctopKpi || fWriteVariableTreeLc2V0bachelor)) {
-          deca = AliVertexingHFUtils::CheckLcpKpiDecay(arrayMC,mcPart,labDau);
-          deca2 = AliVertexingHFUtils::CheckLcV0bachelorDecay(arrayMC,mcPart,labDau2);
-          if(deca<1 || labDau[0]==-1 || labDau[1]<0){
-            if(deca2!=1 || labDau2[0]<0 || labDau2[1]<0 || !fWriteVariableTreeLc2V0bachelor) continue;
-            isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau2);
-            fTreeHandlerGenLc2V0bachelor->SetDauInAcceptance(isDaugInAcc);
-            fTreeHandlerGenLc2V0bachelor->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-            fTreeHandlerGenLc2V0bachelor->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-            fTreeHandlerGenLc2V0bachelor->FillTree();
-          } else if(fWriteVariableTreeLctopKpi) {
-            isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
-            fTreeHandlerGenLctopKpi->SetDauInAcceptance(isDaugInAcc);
-            fTreeHandlerGenLctopKpi->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
-            fTreeHandlerGenLctopKpi->SetMCGenVariables(fRunNumber,fEventID, mcPart);
-            fTreeHandlerGenLctopKpi->FillTree();
-          }
-        }
+    if(absPDG == 411 || absPDG == 421 || absPDG == 431 || absPDG == 4122 || absPDG == 521 || absPDG == 413) {
+      Bool_t isPrimary = kFALSE;
+      Bool_t isFeeddown = kFALSE;
+      //Bplus will always end up with orig=4, so primary
+      Int_t orig = AliVertexingHFUtils::CheckOrigin(arrayMC,mcPart,kTRUE);//Prompt = 4, FeedDown = 5
+      if(absPDG != 521) {
+	if(orig!=4 && orig!=5) continue; //keep only prompt or feed-down (except for Bplus, since prompt and FD are not selected in the reco part)
       }
+
+      if(orig==4){
+	isPrimary = kTRUE;
+	isFeeddown = kFALSE;
+      }
+      else if(orig==5){
+	isPrimary = kFALSE;
+	isFeeddown = kTRUE;
+      }
+	
+      Int_t  deca = 0;
+      Int_t  deca2 = 0;
+      Int_t  labDau[3] = {-1,-1,-1};
+      Int_t  labDau2[3] = {-1,-1,-1}; //Needed for 2nd decay same particle
+      Bool_t isDaugInAcc = kFALSE;
+
+      if(absPDG == 411 && fWriteVariableTreeDplus) {
+	deca = AliVertexingHFUtils::CheckDplusDecay(arrayMC,mcPart,labDau);
+	if(deca<1 || labDau[0]<0 || labDau[1]<0) continue;
+	isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
+	fTreeHandlerGenDplus->SetDauInAcceptance(isDaugInAcc);
+	fTreeHandlerGenDplus->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	fTreeHandlerGenDplus->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	fTreeHandlerGenDplus->FillTree();
+      }
+      else if(absPDG == 421 && fWriteVariableTreeD0) {
+	deca = AliVertexingHFUtils::CheckD0Decay(arrayMC,mcPart,labDau);
+	if(deca!=1 || labDau[0]<0 || labDau[1]<0) continue;
+	isDaugInAcc = CheckDaugAcc(arrayMC,2,labDau);
+	fTreeHandlerGenD0->SetDauInAcceptance(isDaugInAcc);
+	fTreeHandlerGenD0->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	fTreeHandlerGenD0->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	if(fFillJets) fTreeHandlerGenD0->SetGenJetVars(arrayMC,mcPart);
+	fTreeHandlerGenD0->FillTree();
+      }
+      else if(absPDG == 431 && fWriteVariableTreeDs) {
+	deca = AliVertexingHFUtils::CheckDsDecay(arrayMC,mcPart,labDau);
+	if(deca!=1 || labDau[0]<0 || labDau[1]<0) continue;
+	isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
+	fTreeHandlerGenDs->SetDauInAcceptance(isDaugInAcc);
+	fTreeHandlerGenDs->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	fTreeHandlerGenDs->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	fTreeHandlerGenDs->FillTree();
+      }
+      else if(absPDG == 521 && fWriteVariableTreeBplus) {
+	deca = AliVertexingHFUtils::CheckBplusDecay(arrayMC,mcPart,labDau);
+	if(deca!=1 || labDau[0]==-1 || labDau[1]<0) continue;
+	isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
+	fTreeHandlerGenBplus->SetDauInAcceptance(isDaugInAcc);
+	fTreeHandlerGenBplus->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	fTreeHandlerGenBplus->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	fTreeHandlerGenBplus->FillTree();
+      }
+      else if(absPDG == 413 && fWriteVariableTreeDstar) {
+	deca = AliVertexingHFUtils::CheckDstarDecay(arrayMC,mcPart,labDau);
+	if(deca!=1 || labDau[0]<0 || labDau[1]<0) continue;
+	isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
+	fTreeHandlerGenDstar->SetDauInAcceptance(isDaugInAcc);
+	fTreeHandlerGenDstar->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	fTreeHandlerGenDstar->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	fTreeHandlerGenDstar->FillTree();
+      }
+      else if(absPDG == 4122 && (fWriteVariableTreeLctopKpi || fWriteVariableTreeLc2V0bachelor)) {
+	deca = AliVertexingHFUtils::CheckLcpKpiDecay(arrayMC,mcPart,labDau);
+	deca2 = AliVertexingHFUtils::CheckLcV0bachelorDecay(arrayMC,mcPart,labDau2);
+	if(deca<1 || labDau[0]==-1 || labDau[1]<0){
+	  if(deca2!=1 || labDau2[0]<0 || labDau2[1]<0 || !fWriteVariableTreeLc2V0bachelor) continue;
+	  isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau2);
+	  fTreeHandlerGenLc2V0bachelor->SetDauInAcceptance(isDaugInAcc);
+	  fTreeHandlerGenLc2V0bachelor->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	  fTreeHandlerGenLc2V0bachelor->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	  fTreeHandlerGenLc2V0bachelor->FillTree();
+	} else if(fWriteVariableTreeLctopKpi) {
+	  isDaugInAcc = CheckDaugAcc(arrayMC,3,labDau);
+	  fTreeHandlerGenLctopKpi->SetDauInAcceptance(isDaugInAcc);
+	  fTreeHandlerGenLctopKpi->SetCandidateType(kTRUE,kFALSE,isPrimary,isFeeddown,kFALSE);
+	  fTreeHandlerGenLctopKpi->SetMCGenVariables(fRunNumber,fEventID, mcPart);
+	  fTreeHandlerGenLctopKpi->FillTree();
+	}
+      }
+    }
   }  
 }
 
