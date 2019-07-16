@@ -2661,8 +2661,11 @@ void AliAnalysisTaskSEHFTreeCreator::ProcessMCGen(TClonesArray *arrayMC){
         }
       }
     }  
+<<<<<<< HEAD
+=======
+  }
+>>>>>>> parent of 339ad30b55... reverting Fixing merge conflicts 3
 }
-
 //--------------------------------------------------------
 Bool_t AliAnalysisTaskSEHFTreeCreator::CheckDaugAcc(TClonesArray* arrayMC,Int_t nProng, Int_t *labDau){
   /// check if the decay products are in the good eta and pt range
